@@ -46,7 +46,7 @@ CREATE TABLE room_users (
     last_read_at TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
     deleted_at TIMESTAMPTZ,
-    PRIMARY KEY (room_id, user_id)
+    PRIMARY KEY (room_id, user_id, created_at)
 );
 COMMENT ON COLUMN room_users.last_read_at IS 'ユーザーの該当ルームに対する既読確認用';
 
