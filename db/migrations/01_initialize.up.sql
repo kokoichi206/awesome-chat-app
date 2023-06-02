@@ -26,8 +26,14 @@ CREATE TABLE follows (
 );
 COMMENT ON COLUMN follows.display_name IS 'フォローしたユーザーの表示名。';
 
+CREATE TABLE room_types (
+    id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE chat_rooms (
     id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    type uuid REFERENCES room_types(id),
     room_name VARCHAR(255) NOT NULL,
     created_by uuid REFERENCES users(id),
     created_at TIMESTAMPTZ NOT NULL,
