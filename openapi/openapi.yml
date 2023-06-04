@@ -16,7 +16,7 @@ paths:
       summary: ログイン処理。
       operationId: postLogin
       tags:
-        - login
+        - account
       requestBody:
         required: true
         content:
@@ -40,7 +40,30 @@ paths:
       summary: ログインしている（セッションを発行した）ユーザーの情報を取得する。
       operationId: getMe
       tags:
-        - Members
+        - account
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/me.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    patch:
+      summary: ログインしている（セッションを発行した）ユーザーの情報を変更する。
+      operationId: postMe
+      tags:
+        - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/post-me-body.yml"
       responses:
         200:
           description: 成功時
