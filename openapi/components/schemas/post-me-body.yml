@@ -8,6 +8,5 @@ properties:
   username:
     description: 表示名
     type: string
-required:
 example:
   $ref: "../examples/post-me-body.yml"

@@ -1,0 +1,27 @@
+type: object
+description: トークルームの情報
+properties:
+  id:
+    description: ルーム ID
+    type: string
+    format: uuid
+  latest_message:
+    description: 最新のメッセージ（1件）を表示する
+    type: object
+    properties:
+      content:
+        description: メッセージの内容
+        type: string
+      timestamp:
+        description: メッセージの作成日時（ISO 8601 形式）
+        type: string
+  name:
+    description: ルームの表示名
+    type: string
+  count:
+    description: メッセージの未読数
+    type: integer
+required:
+  - id
+example:
+  $ref: "../examples/room.yml"

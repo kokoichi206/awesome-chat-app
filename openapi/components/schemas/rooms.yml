@@ -1,0 +1,9 @@
+type: object
+properties:
+  rooms:
+    description: ルーム一覧
+    type: array
+    items:
+      $ref: "./room.yml"
+example:
+  $ref: "../examples/rooms.yml"

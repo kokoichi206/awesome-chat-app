@@ -1,0 +1,28 @@
+type: object
+description: ルームに投稿されたメッセージ情報
+properties:
+  id:
+    description: メッセージ ID
+    type: string
+    format: uuid
+  user_id:
+    description: 投稿者のユーザー ID
+    type: string
+    format: uuid
+  type:
+    description: メッセージの種類
+    type: string
+  content:
+    description: メッセージの内容
+    type: string
+  timestamp:
+    description: メッセージの投稿日時（ISO 8601 形式）
+    type: string
+required:
+  - id
+  - user_id
+  - type
+  - content
+  - timestamp
+example:
+  $ref: "../examples/room-message.yml"

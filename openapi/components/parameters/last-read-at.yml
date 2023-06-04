@@ -1,0 +1,7 @@
+in: query
+name: last_read_at
+required: false
+schema:
+  description: そのルームの内容を最後に確認した日時（ISO 8601 形式）
+  type: string
+  example: "2023-05-31T12:23:11.938+09:00"
