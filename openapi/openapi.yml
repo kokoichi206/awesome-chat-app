@@ -1,0 +1,54 @@
+openapi: "3.1.0"
+
+info:
+  version: 0.1.0
+  title: Chat-app API
+  description: |
+    チャットアプリに関する API 仕様書です。
+
+servers:
+  - url: "http://localhost:9876"
+    description: 開発環境
+
+paths:
+  /api/login:
+    post:
+      summary: ログイン処理。
+      operationId: postLogin
+      tags:
+        - login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/login-body.yml"
+      responses:
+        204:
+          description: 成功時、Cookie にセッション ID を設定する。
+          headers: 
+            Set-Cookie:
+              schema:
+                type: string
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/users/me:
+    get:
+      summary: ログインしている（セッションを発行した）ユーザーの情報を取得する。
+      operationId: getMe
+      tags:
+        - Members
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/me.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
