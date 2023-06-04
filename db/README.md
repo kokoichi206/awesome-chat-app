@@ -17,6 +17,10 @@ make psql
 make db-down
 ```
 
+## ER 図
+
+![](docs/er_diagram.png)
+
 ## TODO
 
 残課題
