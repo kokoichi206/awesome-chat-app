@@ -1,0 +1,17 @@
+type: object
+description: 新規メッセージを作成をするための request body。
+properties:
+  user_id:
+    description: 作成するユーザーの ID
+    type: string
+    format: uuid
+  type:
+    description: メッセージの種類
+    type: string
+  content:
+    description: メッセージの内容。バイナリデータは base64 エンコードする。
+    type: string
+required:
+  - user_id
+  - type
+  - content

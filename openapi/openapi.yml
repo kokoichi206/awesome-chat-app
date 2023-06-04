@@ -253,3 +253,22 @@ paths:
           $ref: "./components/error-response.yml#/responses/400-BadRequest"
         401:
           $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    post:
+      summary: 指定したルームに新着メッセージを投稿する。
+      operationId: postMessage
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/post-message-body.yml"
+      responses:
+        204:
+          description: 成功時
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
