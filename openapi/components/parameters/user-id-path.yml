@@ -1,0 +1,7 @@
+in: path
+name: user_id
+required: true
+schema:
+  description: ユーザー ID
+  type: string
+  format: uuid

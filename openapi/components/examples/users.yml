@@ -1,0 +1,19 @@
+{
+  users: [
+    {
+      id: "b9cead10-9754-41a9-83f5-4365287ac1e5",
+      img_url: "https://example.com/b9cead10-9754-41a9-83f5-4365287ac1e5.jpg",
+      username: "kokoichi0829",
+    },
+    {
+      id: "c13eac83-b994-461d-bf15-c978fc26fe2f",
+      img_url: "https://example.com/c13eac83-b994-461d-bf15-c978fc26fe2f.jpg",
+      username: "minami0206",
+    },
+    {
+      id: "9817faf8-5e8e-408e-a50d-972b82bc812d",
+      img_url: "https://example.com/9817faf8-5e8e-408e-a50d-972b82bc812d.jpg",
+      username: "ubuntu2004",
+    },
+  ]
+}
