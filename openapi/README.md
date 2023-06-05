@@ -1,3 +1,8 @@
+## openapi
+
+[gh-pages](https://kokoichi206.github.io/awesome-chat-app/) で確認できます。  
+（[github actions](../.github/workflows/deploy-openapi.yml) で更新されます。）
+
 ## Open API の preview 確認
 
 以下のように、redoc を docker compose で使うことで、ブラウザ上で preview することが可能です。
