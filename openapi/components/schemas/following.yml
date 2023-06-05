@@ -1,0 +1,21 @@
+type: object
+description: フォローしてるユーザーの情報
+properties:
+  id:
+    description: ユーザー ID
+    type: string
+    format: uuid
+  img_url:
+    description: アイコン画像の URL
+    type: string
+  username:
+    description: 相手のユーザー名
+    type: string
+  display_name:
+    description: 表示名
+    type: string
+required:
+  - id
+  - username
+example:
+  $ref: "../examples/following.yml"
