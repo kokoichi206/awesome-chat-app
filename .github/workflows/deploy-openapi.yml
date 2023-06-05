@@ -1,12 +1,11 @@
 name: deploy-openapi
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
     paths:
       - 'openapi/**'
   workflow_dispatch:
-
 
 permissions:
   contents: read
@@ -41,7 +40,8 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
-        with: 
+        with:
+          # 注: top からの相対パスになるので注意（working-directory が無視されてそう）。
           path: ./openapi/docs-openapi/
 
   deploy:
