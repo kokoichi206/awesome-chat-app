@@ -1,0 +1,30 @@
+name: deploy-openapi
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'openapi/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install redocly
+        run: npm i -g @redocly/cli@latest
+      - name: Build a static file.
+        run: redocly build-docs -o docs/index.html openapi.yml
+
+      - name: Deploy to gh-pages
+        id: deployment
+        uses: actions/deploy-pages@v2
