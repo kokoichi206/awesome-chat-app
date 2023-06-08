@@ -1,0 +1,9 @@
+type: object
+properties:
+  users:
+    description: ルームに所属するユーザー一覧
+    type: array
+    items:
+      $ref: "./room-user.yml"
+example:
+  $ref: "../examples/room-users.yml"

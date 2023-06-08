@@ -1,0 +1,12 @@
+type: object
+description: 新規ルーム作成をするための request body。
+properties:
+  user_id:
+    description: 作成するユーザー ID
+    type: string
+    format: uuid
+  name:
+    description: ルーム名
+    type: string
+required:
+  - user_id

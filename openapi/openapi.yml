@@ -1,0 +1,297 @@
+openapi: "3.1.0"
+
+info:
+  version: 0.1.0
+  title: Chat-app API
+  description: |
+    チャットアプリに関する API 仕様書です。
+
+servers:
+  - url: "http://localhost:9876"
+    description: 開発環境
+
+paths:
+  /api/login:
+    post:
+      summary: ログイン処理。
+      operationId: postLogin
+      tags:
+        - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/login-body.yml"
+      responses:
+        204:
+          description: 成功時、Cookie にセッション ID を設定する。
+          headers: 
+            Set-Cookie:
+              schema:
+                type: string
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/users/me:
+    get:
+      summary: ログインしている（セッションを発行した）ユーザーの情報を取得する。
+      operationId: getMe
+      tags:
+        - account
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/me.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    patch:
+      summary: ログインしている（セッションを発行した）ユーザーの情報を変更する。
+      operationId: postMe
+      tags:
+        - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/post-me-body.yml"
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/me.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/users/{user_id}:
+    get:
+      summary: 他人を友達追加するための検索（ユーザー ID を使用）。
+      operationId: getUserByID
+      tags:
+        - user
+      parameters:
+        - $ref: ./components/parameters/user-id-path.yml
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/user.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/users/following/{user_id}:
+    post:
+      summary: 他人のユーザーアカウントを友達に追加する。
+      operationId: postFollowing
+      tags:
+        - follows
+      parameters:
+        - $ref: ./components/parameters/user-id-path.yml
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/following.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    patch:
+      summary: 友達の情報を更新する。
+      operationId: patchFollowing
+      tags:
+        - follows
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./components/schemas/patch-following-body.yml
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/following.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/users/following:
+    get:
+      summary: 自分が友達追加しているユーザー一覧。
+      operationId: getFollowing
+      tags:
+        - follows
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/users.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/users/followers:
+    get:
+      summary: 友達追加されてるが、自分からは追加していないユーザー一覧。
+      operationId: getFollowers
+      tags:
+        - follows
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/users.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/rooms:
+    get:
+      summary: 自分が参加しているルーム一覧。
+      operationId: getRooms
+      tags:
+        - room
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/rooms.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    post:
+      summary: ルームを新規作成する。
+      operationId: postRoom
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/post-room-body.yml"
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/room.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    patch:
+      summary: ルーム情報を更新する。
+      operationId: patchRoom
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/post-room-body.yml"
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/room.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/rooms/:roomID/users:
+    get:
+      summary: 指定したルームに所属するユーザー一覧。
+      operationId: getRoomUsers
+      tags:
+        - room
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/room-users.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+  /api/rooms/:roomID/messages:
+    get:
+      summary: 指定したルームでの未読メッセージ一覧を取得する。
+      operationId: getMessages
+      tags:
+        - room
+      parameters:
+        - $ref: ./components/parameters/last-read-at.yml
+      responses:
+        200:
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: components/schemas/room-messages.yml
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
+
+    post:
+      summary: 指定したルームに新着メッセージを投稿する。
+      operationId: postMessage
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas/post-message-body.yml"
+      responses:
+        204:
+          description: 成功時
+        400:
+          $ref: "./components/error-response.yml#/responses/400-BadRequest"
+        401:
+          $ref: "./components/error-response.yml#/responses/401-Unauthenticated"

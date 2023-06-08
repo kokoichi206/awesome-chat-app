@@ -1,0 +1,12 @@
+type: object
+description: 更新対象のフィールドのみを含む json オブジェクト。
+properties:
+  img_url:
+    type: string
+    contentMediaType: image/png
+    contentEncoding: base64
+  username:
+    description: 表示名
+    type: string
+example:
+  $ref: "../examples/post-me-body.yml"

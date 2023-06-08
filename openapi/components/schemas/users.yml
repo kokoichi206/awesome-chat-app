@@ -1,0 +1,9 @@
+type: object
+properties:
+  users:
+    description: ユーザーの配列
+    type: array
+    items:
+      $ref: "./user.yml"
+example:
+  $ref: "../examples/users.yml"

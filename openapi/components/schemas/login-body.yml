@@ -1,0 +1,7 @@
+type: object
+properties:
+  token:
+    description: Firebase Auth API から受け取った ID トークン。
+    type: string
+required:
+  - token

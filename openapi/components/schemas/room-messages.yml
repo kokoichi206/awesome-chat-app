@@ -1,0 +1,9 @@
+type: object
+properties:
+  messages:
+    description: ルームでのメッセージ一覧
+    type: array
+    items:
+      $ref: "./room-message.yml"
+example:
+  $ref: "../examples/room-messages.yml"

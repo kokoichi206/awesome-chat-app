@@ -1,0 +1,6 @@
+type: object
+description: 更新対象のフィールドのみを含む json オブジェクト。
+properties:
+  display_name:
+    description: 友達の表示名
+    type: string

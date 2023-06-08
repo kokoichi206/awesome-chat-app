@@ -1,0 +1,22 @@
+{
+  users: [
+    {
+      id: "c13eac83-b994-461d-bf15-c978fc26fe2f",
+      img_url: "https://example.com/c13eac83-b994-461d-bf15-c978fc26fe2f.jpg",
+      username: "minami0206",
+      last_read_at: "2023-06-01T11:22:11.938+09:00",
+    },
+    {
+      id: "b9cead10-9754-41a9-83f5-4365287ac1e5",
+      img_url: "https://example.com/cccf8036-c4b5-4813-a6eb-c1208d40f1e9.jpg",
+      username: "kokoichi0829",
+      last_read_at: "2023-05-31T12:23:11.938+09:00",
+    },
+    {
+      id: "9817faf8-5e8e-408e-a50d-972b82bc812d",
+      img_url: "https://example.com/9817faf8-5e8e-408e-a50d-972b82bc812d.jpg",
+      username: "ubuntu2004",
+      last_read_at: "2023-05-30T12:23:11.938+09:00",
+    },
+  ]
+}

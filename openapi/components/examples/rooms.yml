@@ -1,0 +1,22 @@
+{
+  rooms: [
+    {
+      id: "092dd963-a708-4323-ab85-cd820861936e",
+      latest_message: {
+        content: "昨日何食べた？",
+        timestamp: "2023-05-23T12:23:11.938+09:00"
+      },
+      name: "あぁの会",
+      count: 0,
+    },
+    {
+      id: "8113036d-589c-44a9-8013-ea78e09c037f",
+      latest_message: {
+        content: "大阪着いた〜〜",
+        timestamp: "2023-05-31T12:31:08.338+09:00"
+      },
+      name: "愛でる会",
+      count: 3,
+    },
+  ]
+}

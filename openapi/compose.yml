@@ -1,0 +1,10 @@
+services:
+  doc:
+    image: redocly/redoc
+    volumes:
+      - ./:/usr/share/nginx/html/api
+    environment:
+      - PAGE_TITLE="Chat-app API Documents"
+      - SPEC_URL=api/openapi.yml
+    ports:
+      - 12345:80
