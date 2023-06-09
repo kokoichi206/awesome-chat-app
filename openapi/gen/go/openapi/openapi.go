@@ -4,12 +4,222 @@
 package openapi
 
 import (
+	"bytes"
+	"compress/gzip"
+	"encoding/base64"
 	"fmt"
 	"net/http"
+	"net/url"
+	"path"
+	"strings"
 
 	"github.com/deepmap/oapi-codegen/pkg/runtime"
+	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
 )
+
+// Following フォローしてるユーザーの情報
+type Following struct {
+	// DisplayName 表示名
+	DisplayName *string `json:"display_name,omitempty"`
+
+	// Id ユーザー ID
+	Id openapi_types.UUID `json:"id"`
+
+	// ImgUrl アイコン画像の URL
+	ImgUrl *string `json:"img_url,omitempty"`
+
+	// Username 相手のユーザー名
+	Username string `json:"username"`
+}
+
+// LoginBody defines model for login-body.
+type LoginBody struct {
+	// Token Firebase Auth API から受け取った ID トークン。
+	Token string `json:"token"`
+}
+
+// Me defines model for me.
+type Me struct {
+	// Email ログインアカウントに紐づいたメールアドレス
+	Email string `json:"email"`
+
+	// Id ユーザー ID
+	Id openapi_types.UUID `json:"id"`
+
+	// ImgUrl アイコン画像の URL
+	ImgUrl *string `json:"img_url,omitempty"`
+
+	// Username 表示名
+	Username string `json:"username"`
+}
+
+// PatchFollowingBody 更新対象のフィールドのみを含む json オブジェクト。
+type PatchFollowingBody struct {
+	// DisplayName 友達の表示名
+	DisplayName *string `json:"display_name,omitempty"`
+}
+
+// PostMeBody 更新対象のフィールドのみを含む json オブジェクト。
+type PostMeBody struct {
+	ImgUrl *string `json:"img_url,omitempty"`
+
+	// Username 表示名
+	Username *string `json:"username,omitempty"`
+}
+
+// PostMessageBody 新規メッセージを作成をするための request body。
+type PostMessageBody struct {
+	// Content メッセージの内容。バイナリデータは base64 エンコードする。
+	Content string `json:"content"`
+
+	// Type メッセージの種類
+	Type string `json:"type"`
+
+	// UserId 作成するユーザーの ID
+	UserId openapi_types.UUID `json:"user_id"`
+}
+
+// PostRoomBody 新規ルーム作成をするための request body。
+type PostRoomBody struct {
+	// Name ルーム名
+	Name *string `json:"name,omitempty"`
+
+	// UserId 作成するユーザー ID
+	UserId openapi_types.UUID `json:"user_id"`
+}
+
+// Room トークルームの情報
+type Room struct {
+	// Count メッセージの未読数
+	Count *int `json:"count,omitempty"`
+
+	// Id ルーム ID
+	Id openapi_types.UUID `json:"id"`
+
+	// LatestMessage 最新のメッセージ（1件）を表示する
+	LatestMessage *struct {
+		// Content メッセージの内容
+		Content *string `json:"content,omitempty"`
+
+		// Timestamp メッセージの作成日時（ISO 8601 形式）
+		Timestamp *string `json:"timestamp,omitempty"`
+	} `json:"latest_message,omitempty"`
+
+	// Name ルームの表示名
+	Name *string `json:"name,omitempty"`
+}
+
+// RoomMessage ルームに投稿されたメッセージ情報
+type RoomMessage struct {
+	// Content メッセージの内容
+	Content string `json:"content"`
+
+	// Id メッセージ ID
+	Id openapi_types.UUID `json:"id"`
+
+	// Timestamp メッセージの投稿日時（ISO 8601 形式）
+	Timestamp string `json:"timestamp"`
+
+	// Type メッセージの種類
+	Type string `json:"type"`
+
+	// UserId 投稿者のユーザー ID
+	UserId openapi_types.UUID `json:"user_id"`
+}
+
+// RoomMessages defines model for room-messages.
+type RoomMessages struct {
+	// Messages ルームでのメッセージ一覧
+	Messages *[]RoomMessage `json:"messages,omitempty"`
+}
+
+// RoomUser ユーザー（他者）の情報
+type RoomUser struct {
+	// Id ユーザー ID
+	Id openapi_types.UUID `json:"id"`
+
+	// ImgUrl アイコン画像の URL
+	ImgUrl *string `json:"img_url,omitempty"`
+
+	// LastReadAt そのルームの内容を最後に確認した日時（ISO 8601 形式）
+	LastReadAt *string `json:"last_read_at,omitempty"`
+
+	// Username 表示名
+	Username string `json:"username"`
+}
+
+// RoomUsers defines model for room-users.
+type RoomUsers struct {
+	// Users ルームに所属するユーザー一覧
+	Users *[]RoomUser `json:"users,omitempty"`
+}
+
+// Rooms defines model for rooms.
+type Rooms struct {
+	// Rooms ルーム一覧
+	Rooms *[]Room `json:"rooms,omitempty"`
+}
+
+// User ユーザー（他者）の情報
+type User struct {
+	// Id ユーザー ID
+	Id openapi_types.UUID `json:"id"`
+
+	// ImgUrl アイコン画像の URL
+	ImgUrl *string `json:"img_url,omitempty"`
+
+	// Username 表示名
+	Username string `json:"username"`
+}
+
+// Users defines model for users.
+type Users struct {
+	// Users ユーザーの配列
+	Users *[]User `json:"users,omitempty"`
+}
+
+// LastReadAt そのルームの内容を最後に確認した日時（ISO 8601 形式）
+type LastReadAt = string
+
+// UserIdPath ユーザー ID
+type UserIdPath = openapi_types.UUID
+
+// N400BadRequest defines model for 400-BadRequest.
+type N400BadRequest struct {
+	Code    *string `json:"code,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+// N401Unauthenticated defines model for 401-Unauthenticated.
+type N401Unauthenticated struct {
+	Code    *string `json:"code,omitempty"`
+	Message *string `json:"message,omitempty"`
+}
+
+// GetMessagesParams defines parameters for GetMessages.
+type GetMessagesParams struct {
+	LastReadAt *LastReadAt `form:"last_read_at,omitempty" json:"last_read_at,omitempty"`
+}
+
+// PostLoginJSONRequestBody defines body for PostLogin for application/json ContentType.
+type PostLoginJSONRequestBody = LoginBody
+
+// PatchRoomJSONRequestBody defines body for PatchRoom for application/json ContentType.
+type PatchRoomJSONRequestBody = PostRoomBody
+
+// PostRoomJSONRequestBody defines body for PostRoom for application/json ContentType.
+type PostRoomJSONRequestBody = PostRoomBody
+
+// PostMessageJSONRequestBody defines body for PostMessage for application/json ContentType.
+type PostMessageJSONRequestBody = PostMessageBody
+
+// PatchFollowingJSONRequestBody defines body for PatchFollowing for application/json ContentType.
+type PatchFollowingJSONRequestBody = PatchFollowingBody
+
+// PostMeJSONRequestBody defines body for PostMe for application/json ContentType.
+type PostMeJSONRequestBody = PostMeBody
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -335,4 +545,129 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/api/users/me", wrapper.GetMe)
 	router.PATCH(options.BaseURL+"/api/users/me", wrapper.PostMe)
 	router.GET(options.BaseURL+"/api/users/:user_id", wrapper.GetUserByID)
+}
+
+// Base64 encoded, gzipped, json marshaled Swagger object
+var swaggerSpec = []string{
+
+	"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",
+	"OwAA",
+}
+
+// GetSwagger returns the content of the embedded swagger specification file
+// or error if failed to decode
+func decodeSpec() ([]byte, error) {
+	zipped, err := base64.StdEncoding.DecodeString(strings.Join(swaggerSpec, ""))
+	if err != nil {
+		return nil, fmt.Errorf("error base64 decoding spec: %s", err)
+	}
+	zr, err := gzip.NewReader(bytes.NewReader(zipped))
+	if err != nil {
+		return nil, fmt.Errorf("error decompressing spec: %s", err)
+	}
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(zr)
+	if err != nil {
+		return nil, fmt.Errorf("error decompressing spec: %s", err)
+	}
+
+	return buf.Bytes(), nil
+}
+
+var rawSpec = decodeSpecCached()
+
+// a naive cached of a decoded swagger spec
+func decodeSpecCached() func() ([]byte, error) {
+	data, err := decodeSpec()
+	return func() ([]byte, error) {
+		return data, err
+	}
+}
+
+// Constructs a synthetic filesystem for resolving external references when loading openapi specifications.
+func PathToRawSpec(pathToFile string) map[string]func() ([]byte, error) {
+	var res = make(map[string]func() ([]byte, error))
+	if len(pathToFile) > 0 {
+		res[pathToFile] = rawSpec
+	}
+
+	return res
+}
+
+// GetSwagger returns the Swagger specification corresponding to the generated code
+// in this file. The external references of Swagger specification are resolved.
+// The logic of resolving external references is tightly connected to "import-mapping" feature.
+// Externally referenced files must be embedded in the corresponding golang packages.
+// Urls can be supported but this task was out of the scope.
+func GetSwagger() (swagger *openapi3.T, err error) {
+	var resolvePath = PathToRawSpec("")
+
+	loader := openapi3.NewLoader()
+	loader.IsExternalRefsAllowed = true
+	loader.ReadFromURIFunc = func(loader *openapi3.Loader, url *url.URL) ([]byte, error) {
+		var pathToFile = url.String()
+		pathToFile = path.Clean(pathToFile)
+		getSpec, ok := resolvePath[pathToFile]
+		if !ok {
+			err1 := fmt.Errorf("path not found: %s", pathToFile)
+			return nil, err1
+		}
+		return getSpec()
+	}
+	var specData []byte
+	specData, err = rawSpec()
+	if err != nil {
+		return
+	}
+	swagger, err = loader.LoadFromData(specData)
+	if err != nil {
+		return
+	}
+	return
 }
