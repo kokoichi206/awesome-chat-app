@@ -121,6 +121,8 @@ paths:
       operationId: patchFollowing
       tags:
         - follows
+      parameters:
+        - $ref: ./components/parameters/user-id-path.yml
       requestBody:
         required: true
         content:
