@@ -8,6 +8,7 @@ import (
 
 	"github.com/kokoichi206/awesome-chat-app/backend/usecase"
 	"github.com/kokoichi206/awesome-chat-app/backend/util/logger"
+	"github.com/kokoichi206/awesome-chat-app/openapi/gen/go/openapi"
 )
 
 type handler struct {
@@ -25,13 +26,16 @@ func New(logger logger.Logger, usecase usecase.Usecase) *handler {
 		usecase: usecase,
 		Engine:  r,
 	}
-	h.setupRoutes()
+	// TODO: openapi に移行する？
+	h.setupRoutes(r)
+
+	openapi.RegisterHandlers(r, h)
 
 	return h
 }
 
-func (h *handler) setupRoutes() {
-	h.Engine.GET("/health", h.Health)
+func (h *handler) setupRoutes(r *gin.Engine) {
+	r.GET("/health", h.Health)
 }
 
 func (h *handler) Health(c *gin.Context) {
