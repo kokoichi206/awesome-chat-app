@@ -1,0 +1,633 @@
+openapi: 3.1.0
+info:
+  version: 0.1.0
+  title: Chat-app API
+  description: |
+    チャットアプリに関する API 仕様書です。
+servers:
+  - url: http://localhost:9876
+    description: 開発環境
+paths:
+  /api/login:
+    post:
+      summary: ログイン処理。
+      operationId: postLogin
+      tags:
+        - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login-body'
+      responses:
+        '204':
+          description: 成功時、Cookie にセッション ID を設定する。
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/users/me:
+    get:
+      summary: ログインしている（セッションを発行した）ユーザーの情報を取得する。
+      operationId: getMe
+      tags:
+        - account
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/me'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+    patch:
+      summary: ログインしている（セッションを発行した）ユーザーの情報を変更する。
+      operationId: postMe
+      tags:
+        - account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post-me-body'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/me'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/users/{user_id}:
+    get:
+      summary: 他人を友達追加するための検索（ユーザー ID を使用）。
+      operationId: getUserByID
+      tags:
+        - user
+      parameters:
+        - $ref: '#/components/parameters/user-id-path'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/users/following/{user_id}:
+    post:
+      summary: 他人のユーザーアカウントを友達に追加する。
+      operationId: postFollowing
+      tags:
+        - follows
+      parameters:
+        - $ref: '#/components/parameters/user-id-path'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/following'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+    patch:
+      summary: 友達の情報を更新する。
+      operationId: patchFollowing
+      tags:
+        - follows
+      parameters:
+        - $ref: '#/components/parameters/user-id-path'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patch-following-body'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/following'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/users/following:
+    get:
+      summary: 自分が友達追加しているユーザー一覧。
+      operationId: getFollowing
+      tags:
+        - follows
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/users/followers:
+    get:
+      summary: 友達追加されてるが、自分からは追加していないユーザー一覧。
+      operationId: getFollowers
+      tags:
+        - follows
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/rooms:
+    get:
+      summary: 自分が参加しているルーム一覧。
+      operationId: getRooms
+      tags:
+        - room
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rooms'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+    post:
+      summary: ルームを新規作成する。
+      operationId: postRoom
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post-room-body'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/room'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+    patch:
+      summary: ルーム情報を更新する。
+      operationId: patchRoom
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post-room-body'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/room'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/rooms/:roomID/users:
+    get:
+      summary: 指定したルームに所属するユーザー一覧。
+      operationId: getRoomUsers
+      tags:
+        - room
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/room-users'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+  /api/rooms/:roomID/messages:
+    get:
+      summary: 指定したルームでの未読メッセージ一覧を取得する。
+      operationId: getMessages
+      tags:
+        - room
+      parameters:
+        - $ref: '#/components/parameters/last-read-at'
+      responses:
+        '200':
+          description: 成功時
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/room-messages'
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+    post:
+      summary: 指定したルームに新着メッセージを投稿する。
+      operationId: postMessage
+      tags:
+        - room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post-message-body'
+      responses:
+        '204':
+          description: 成功時
+        '400':
+          $ref: '#/components/responses/400-BadRequest'
+        '401':
+          $ref: '#/components/responses/401-Unauthenticated'
+components:
+  schemas:
+    login-body:
+      type: object
+      properties:
+        token:
+          description: Firebase Auth API から受け取った ID トークン。
+          type: string
+      required:
+        - token
+    me:
+      type: object
+      properties:
+        id:
+          description: ユーザー ID
+          type: string
+          format: uuid
+        email:
+          description: ログインアカウントに紐づいたメールアドレス
+          type: string
+        img_url:
+          description: アイコン画像の URL
+          type: string
+        username:
+          description: 表示名
+          type: string
+      required:
+        - id
+        - email
+        - username
+      example:
+        id: cccf8036-c4b5-4813-a6eb-c1208d40f1e9
+        email: kokoichi@example.email.com
+        img_url: https://example.com/cccf8036-c4b5-4813-a6eb-c1208d40f1e9.jpg
+        username: kokoichi
+    post-me-body:
+      type: object
+      description: 更新対象のフィールドのみを含む json オブジェクト。
+      properties:
+        img_url:
+          type: string
+          contentMediaType: image/png
+          contentEncoding: base64
+        username:
+          description: 表示名
+          type: string
+      example:
+        id: cccf8036-c4b5-4813-a6eb-c1208d40f1e9
+        username: kokoichi0829
+    user:
+      type: object
+      description: ユーザー（他者）の情報
+      properties:
+        id:
+          description: ユーザー ID
+          type: string
+          format: uuid
+        img_url:
+          description: アイコン画像の URL
+          type: string
+        username:
+          description: 表示名
+          type: string
+      required:
+        - id
+        - username
+      example:
+        id: b9cead10-9754-41a9-83f5-4365287ac1e5
+        img_url: https://example.com/cccf8036-c4b5-4813-a6eb-c1208d40f1e9.jpg
+        username: kokoichi0829
+    following:
+      type: object
+      description: フォローしてるユーザーの情報
+      properties:
+        id:
+          description: ユーザー ID
+          type: string
+          format: uuid
+        img_url:
+          description: アイコン画像の URL
+          type: string
+        username:
+          description: 相手のユーザー名
+          type: string
+        display_name:
+          description: 表示名
+          type: string
+      required:
+        - id
+        - username
+      example:
+        id: b9cead10-9754-41a9-83f5-4365287ac1e5
+        img_url: https://example.com/cccf8036-c4b5-4813-a6eb-c1208d40f1e9.jpg
+        username: kokoichi0829
+        display_name: 神様
+    patch-following-body:
+      type: object
+      description: 更新対象のフィールドのみを含む json オブジェクト。
+      properties:
+        display_name:
+          description: 友達の表示名
+          type: string
+    users:
+      type: object
+      properties:
+        users:
+          description: ユーザーの配列
+          type: array
+          items:
+            $ref: '#/components/schemas/user'
+      example:
+        users:
+          - id: b9cead10-9754-41a9-83f5-4365287ac1e5
+            img_url: https://example.com/b9cead10-9754-41a9-83f5-4365287ac1e5.jpg
+            username: kokoichi0829
+          - id: c13eac83-b994-461d-bf15-c978fc26fe2f
+            img_url: https://example.com/c13eac83-b994-461d-bf15-c978fc26fe2f.jpg
+            username: minami0206
+          - id: 9817faf8-5e8e-408e-a50d-972b82bc812d
+            img_url: https://example.com/9817faf8-5e8e-408e-a50d-972b82bc812d.jpg
+            username: ubuntu2004
+    room:
+      type: object
+      description: トークルームの情報
+      properties:
+        id:
+          description: ルーム ID
+          type: string
+          format: uuid
+        latest_message:
+          description: 最新のメッセージ（1件）を表示する
+          type: object
+          properties:
+            content:
+              description: メッセージの内容
+              type: string
+            timestamp:
+              description: メッセージの作成日時（ISO 8601 形式）
+              type: string
+        name:
+          description: ルームの表示名
+          type: string
+        count:
+          description: メッセージの未読数
+          type: integer
+      required:
+        - id
+      example:
+        id: 092dd963-a708-4323-ab85-cd820861936e
+        latest_message:
+          content: 昨日何食べた？
+          timestamp: '2023-05-31T12:23:11.938+09:00'
+        name: あぁの会
+        count: 3
+    rooms:
+      type: object
+      properties:
+        rooms:
+          description: ルーム一覧
+          type: array
+          items:
+            $ref: '#/components/schemas/room'
+      example:
+        rooms:
+          - id: 092dd963-a708-4323-ab85-cd820861936e
+            latest_message:
+              content: 昨日何食べた？
+              timestamp: '2023-05-23T12:23:11.938+09:00'
+            name: あぁの会
+            count: 0
+          - id: 8113036d-589c-44a9-8013-ea78e09c037f
+            latest_message:
+              content: 大阪着いた〜〜
+              timestamp: '2023-05-31T12:31:08.338+09:00'
+            name: 愛でる会
+            count: 3
+    post-room-body:
+      type: object
+      description: 新規ルーム作成をするための request body。
+      properties:
+        user_id:
+          description: 作成するユーザー ID
+          type: string
+          format: uuid
+        name:
+          description: ルーム名
+          type: string
+      required:
+        - user_id
+    room-user:
+      type: object
+      description: ユーザー（他者）の情報
+      properties:
+        id:
+          description: ユーザー ID
+          type: string
+          format: uuid
+        img_url:
+          description: アイコン画像の URL
+          type: string
+        username:
+          description: 表示名
+          type: string
+        last_read_at:
+          description: そのルームの内容を最後に確認した日時（ISO 8601 形式）
+          type: string
+      required:
+        - id
+        - username
+      example:
+        id: b9cead10-9754-41a9-83f5-4365287ac1e5
+        img_url: https://example.com/cccf8036-c4b5-4813-a6eb-c1208d40f1e9.jpg
+        username: kokoichi0829
+        last_read_at: '2023-05-31T12:23:11.938+09:00'
+    room-users:
+      type: object
+      properties:
+        users:
+          description: ルームに所属するユーザー一覧
+          type: array
+          items:
+            $ref: '#/components/schemas/room-user'
+      example:
+        users:
+          - id: c13eac83-b994-461d-bf15-c978fc26fe2f
+            img_url: https://example.com/c13eac83-b994-461d-bf15-c978fc26fe2f.jpg
+            username: minami0206
+            last_read_at: '2023-06-01T11:22:11.938+09:00'
+          - id: b9cead10-9754-41a9-83f5-4365287ac1e5
+            img_url: https://example.com/cccf8036-c4b5-4813-a6eb-c1208d40f1e9.jpg
+            username: kokoichi0829
+            last_read_at: '2023-05-31T12:23:11.938+09:00'
+          - id: 9817faf8-5e8e-408e-a50d-972b82bc812d
+            img_url: https://example.com/9817faf8-5e8e-408e-a50d-972b82bc812d.jpg
+            username: ubuntu2004
+            last_read_at: '2023-05-30T12:23:11.938+09:00'
+    room-message:
+      type: object
+      description: ルームに投稿されたメッセージ情報
+      properties:
+        id:
+          description: メッセージ ID
+          type: string
+          format: uuid
+        user_id:
+          description: 投稿者のユーザー ID
+          type: string
+          format: uuid
+        type:
+          description: メッセージの種類
+          type: string
+        content:
+          description: メッセージの内容
+          type: string
+        timestamp:
+          description: メッセージの投稿日時（ISO 8601 形式）
+          type: string
+      required:
+        - id
+        - user_id
+        - type
+        - content
+        - timestamp
+      example:
+        id: 275075d9-fc13-4a75-97ab-3d4a0216774e
+        user_id: b9cead10-9754-41a9-83f5-4365287ac1e5
+        type: text
+        content: さすがに可愛すぎる
+        timestamp: '2023-06-01T12:23:11.938+09:00'
+    room-messages:
+      type: object
+      properties:
+        messages:
+          description: ルームでのメッセージ一覧
+          type: array
+          items:
+            $ref: '#/components/schemas/room-message'
+      example:
+        messages:
+          - id: 275075d9-fc13-4a75-97ab-3d4a0216774e
+            user_id: b9cead10-9754-41a9-83f5-4365287ac1e5
+            type: text
+            content: さすがに可愛すぎる
+            timestamp: '2023-06-01T12:23:11.938+09:00'
+          - id: c13eac83-b994-461d-bf15-c978fc26fe2f
+            user_id: b9cead10-9754-41a9-83f5-4365287ac1e5
+            type: image
+            content: http://localhost:9999/images/test.jpeg
+            timestamp: '2023-06-01T12:23:11.938+09:00'
+    post-message-body:
+      type: object
+      description: 新規メッセージを作成をするための request body。
+      properties:
+        user_id:
+          description: 作成するユーザーの ID
+          type: string
+          format: uuid
+        type:
+          description: メッセージの種類
+          type: string
+        content:
+          description: メッセージの内容。バイナリデータは base64 エンコードする。
+          type: string
+      required:
+        - user_id
+        - type
+        - content
+  responses:
+    400-BadRequest:
+      description: client side error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+    401-Unauthenticated:
+      description: unauthenticated error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+          example:
+            code: '401'
+            message: 権限がありません。再度認証してください。
+  parameters:
+    user-id-path:
+      in: path
+      name: user_id
+      required: true
+      schema:
+        description: ユーザー ID
+        type: string
+        format: uuid
+    last-read-at:
+      in: query
+      name: last_read_at
+      required: false
+      schema:
+        description: そのルームの内容を最後に確認した日時（ISO 8601 形式）
+        type: string
+        example: '2023-05-31T12:23:11.938+09:00'

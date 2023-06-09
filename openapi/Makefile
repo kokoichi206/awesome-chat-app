@@ -18,4 +18,5 @@ down:
 .PHONY: gen
 gen:	# openapi.yaml から go のコードを生成する。
 	redocly bundle ./openapi.yml --output ./gen/generated.yml
-	oapi-codegen -config gen/go-model.config.yml -generate gin-server ./gen/generated.yml
+	oapi-codegen -config gen/go/model.config.yml -generate gin-server ./gen/generated.yml
+	cd gen/go/openapi && go mod tidy
