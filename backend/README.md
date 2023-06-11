@@ -34,6 +34,16 @@ func init() {
 }
 ```
 
+## 開発用
+
+### mock の生成
+
+mockgen を使って test 用にモックを作成します。
+
+``` sh
+make mock
+```
+
 ## License
 
 This repository is under [MIT License](./LICENSE).

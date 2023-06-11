@@ -16,7 +16,7 @@ bootstrap: ## 外部ツールをインストールする。
 		go install $$t ; \
 	done
 
-mock:
+mock:	## interface に沿った mock を生成する。
 	mockgen -source=usecase/usecase.go -destination=handler/mock_usecase_test.go -package=handler_test
 	mockgen -source=repository/repository.go -destination=usecase/mock_repository_test.go -package=usecase_test
 
