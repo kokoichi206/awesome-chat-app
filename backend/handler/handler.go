@@ -11,11 +11,19 @@ import (
 	"github.com/kokoichi206/awesome-chat-app/openapi/gen/go/openapi"
 )
 
+const (
+	sessionCookieName = "awesome-chat-app-session"
+	sessionMaxAge     = 60 * 60 * 24 * 7
+)
+
 type handler struct {
 	logger  logger.Logger
 	usecase usecase.Usecase
 
 	Engine *gin.Engine
+
+	sessionCookieName string
+	sessionMaxAge     int
 }
 
 func New(logger logger.Logger, usecase usecase.Usecase) *handler {
@@ -25,6 +33,9 @@ func New(logger logger.Logger, usecase usecase.Usecase) *handler {
 		logger:  logger,
 		usecase: usecase,
 		Engine:  r,
+
+		sessionCookieName: sessionCookieName,
+		sessionMaxAge:     sessionMaxAge,
 	}
 	// TODO: openapi に移行する？
 	h.setupRoutes(r)

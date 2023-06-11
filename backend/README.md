@@ -15,6 +15,7 @@
 | DB_PASSWORD |  | root |
 | DB_NAME |  | sakamichi |
 | DB_SSL_MODE |  | disable |
+| FIREBASE_ADMIN_CONFIG_PATH | Firebase admin sdk の設定ファイルへのパス |  |
 
 ### ローカル実行
 
@@ -28,6 +29,8 @@ func init() {
 	os.Setenv("DB_USER", "postgres")
 	os.Setenv("DB_PASSWORD", "postgres")
 	os.Setenv("DB_NAME", "awesome-chat-app")
+
+	os.Setenv("FIREBASE_ADMIN_CONFIG_PATH", "config/awesome-chat-app-c9e81-firebase-adminsdk-gdtpk-randomdesu.json")
 }
 ```
 

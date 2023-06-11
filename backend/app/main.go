@@ -10,6 +10,7 @@ import (
 	"github.com/kokoichi206/awesome-chat-app/backend/config"
 	"github.com/kokoichi206/awesome-chat-app/backend/handler"
 	"github.com/kokoichi206/awesome-chat-app/backend/repository/database"
+	"github.com/kokoichi206/awesome-chat-app/backend/repository/firebase"
 	"github.com/kokoichi206/awesome-chat-app/backend/usecase"
 	"github.com/kokoichi206/awesome-chat-app/backend/util"
 	"github.com/kokoichi206/awesome-chat-app/backend/util/logger"
@@ -44,8 +45,13 @@ func main() {
 		logger.Errorf(context.Background(), "failed to db.New: ", err)
 	}
 
+	authClient, err := firebase.New(context.Background(), cfg.CredentialPath)
+	if err != nil {
+		logger.Errorf(context.Background(), "failed to firebase.New: ", err)
+	}
+
 	// usecase
-	usecase := usecase.New(database, logger)
+	usecase := usecase.New(database, authClient, logger)
 
 	// handler
 	h := handler.New(logger, usecase)

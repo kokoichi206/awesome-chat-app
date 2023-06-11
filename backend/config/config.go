@@ -24,6 +24,9 @@ type Config struct {
 	DbPassword string
 	DbName     string
 	DbSSLMode  string
+
+	// Firebase settings.
+	CredentialPath string
 }
 
 // get configuration from environment variables.
@@ -76,17 +79,20 @@ func New() Config {
 		dbSslMode = "disable"
 	}
 
+	credentialPath := os.Getenv("FIREBASE_ADMIN_CONFIG_PATH")
+
 	return Config{
-		ServerHost: serverHost,
-		ServerPort: serverPort,
-		AgentHost:  agentHort,
-		AgentPort:  agentPort,
-		DbDriver:   dbDriver,
-		DbHost:     dbHost,
-		DbPort:     dbPort,
-		DbUser:     dbUser,
-		DbPassword: dbPassword,
-		DbName:     dbName,
-		DbSSLMode:  dbSslMode,
+		ServerHost:     serverHost,
+		ServerPort:     serverPort,
+		AgentHost:      agentHort,
+		AgentPort:      agentPort,
+		DbDriver:       dbDriver,
+		DbHost:         dbHost,
+		DbPort:         dbPort,
+		DbUser:         dbUser,
+		DbPassword:     dbPassword,
+		DbName:         dbName,
+		DbSSLMode:      dbSslMode,
+		CredentialPath: credentialPath,
 	}
 }
