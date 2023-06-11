@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+      import {
+        getAuth,
+        getIdToken,
+        signInWithPopup,
+        GoogleAuthProvider,
+        GithubAuthProvider,
+      } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+      // TODO: change your firebase config
+      /**
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "your-app.domain.com",
+        projectId: "your-apps-project-id",
+        storageBucket: "your-app.appspot.com",
+        messagingSenderId: "aaaaa",
+        appId: "app-id",
+      };
+      */
+      const firebaseConfig = {
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+
+      initializeApp(firebaseConfig);
+      console.log("initializeApp done");
+
+      const auth = getAuth();
+      const redirectToMyPageWhenLoginSuccess = async (provider) => {
+        try {
+          console.log("signInWithPopup");
+          console.log("auth" + auth);
+
+          const result = await signInWithPopup(auth, provider);
+          console.log("signInWithPopup done");
+          console.log("result.user: " + result.user);
+      
+          // https://firebase.google.com/docs/reference/js/v8/firebase.User#getidtoken
+          const idToken = await getIdToken(result.user);
+          console.log("idToken: " + idToken);
+
+          // when email is not verified
+          if (!result.user.emailVerified) {
+            window.location.href = "register-email.html";
+            return;
+          }
+
+          // https://firebase.google.com/docs/auth/web/github-auth?hl=ja#:~:text=%E3%83%9D%E3%83%83%E3%83%97%E3%82%A2%E3%83%83%E3%83%97%20%E3%82%A6%E3%82%A3%E3%83%B3%E3%83%89%E3%82%A6%E3%81%A7%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%82%92%E8%A1%8C%E3%81%86%E5%A0%B4%E5%90%88%E3%81%AF%E3%80%81signInWithPopup%20%E3%82%92%E5%91%BC%E3%81%B3%E5%87%BA%E3%81%97%E3%81%BE%E3%81%99%E3%80%82
+          const credential = GithubAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          // NOT TRUE...
+          console.log("token: " + token);
+        } catch (error) {
+          // have logged in with github and tried to login with google
+          if (error.code === "auth/account-exists-with-different-credential") {
+            alert(
+              `${error.customData.email} is already used with different provider`
+            );
+            return;
+          }
+          alert(`failed to login / sign up\n${error.message}`);
+        }
+      };
+
+      const googleLogin = () => {
+        redirectToMyPageWhenLoginSuccess(new GoogleAuthProvider());
+      };
+
+      if (!auth.currentUser) {
+        googleLogin();
+      } else {
+        console.log("already logged in: " + auth.currentUser);
+      }
+    </script>
+  </head>
+
+  <body></body>
+</html>
