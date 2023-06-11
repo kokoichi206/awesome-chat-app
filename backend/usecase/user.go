@@ -13,7 +13,7 @@ func (u *usecase) VerifyIDToken(ctx context.Context, token string) error {
 
 	_, err := u.firebase.VerifyIDToken(ctx, token)
 	if err != nil {
-		return fmt.Errorf("failed to create session: %w", err)
+		return fmt.Errorf("failed to verify token: %w", err)
 	}
 
 	return nil

@@ -5,10 +5,14 @@ go 1.20
 require (
 	firebase.google.com/go/v4 v4.11.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-playground/assert/v2 v2.2.0
+	github.com/golang/mock v1.6.0
 	github.com/kokoichi206/awesome-chat-app/openapi/gen/go/openapi v0.0.0-20230609194927-d7bcb287e29b
 	github.com/lib/pq v1.10.9
 	github.com/opentracing/opentracing-go v1.2.0
+	github.com/stretchr/testify v1.8.3
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	google.golang.org/api v0.114.0
 )
 
 require (
@@ -24,6 +28,7 @@ require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/deepmap/oapi-codegen v1.13.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/getkin/kin-openapi v0.117.0 // indirect
@@ -57,6 +62,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/perimeterx/marshmallow v1.1.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
@@ -73,7 +79,6 @@ require (
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
-	google.golang.org/api v0.114.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/appengine/v2 v2.0.2 // indirect
 	google.golang.org/genproto v0.0.0-20230320184635-7606e756e683 // indirect

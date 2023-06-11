@@ -3,6 +3,7 @@
 
 EXTERNAL_TOOLS := \
 	github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.1 \
+	github.com/golang/mock/mockgen@v1.6.0 \
 	golang.org/x/pkgsite/cmd/pkgsite@latest # latest は go 1.19 以上が必要: https://github.com/golang/pkgsite#requirements
 
 help:	## https://postd.cc/auto-documented-makefile/
@@ -14,6 +15,10 @@ bootstrap: ## 外部ツールをインストールする。
 		echo "Installing $$t ..." ; \
 		go install $$t ; \
 	done
+
+mock:
+	mockgen -source=usecase/usecase.go -destination=handler/mock_usecase_test.go -package=handler_test
+	mockgen -source=repository/repository.go -destination=usecase/mock_repository_test.go -package=usecase_test
 
 DC = docker compose
 psql:	## docker compose で起動した postgresql の db に接続する。
