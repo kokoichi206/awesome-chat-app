@@ -15,12 +15,14 @@ func (h *handler) sessionCheck() gin.HandlerFunc {
 			c.Status(http.StatusUnauthorized)
 			c.Abort()
 
+			return
 		}
 
 		if err := h.usecase.VerifySessionCookie(c.Request.Context(), session); err != nil {
 			c.Status(http.StatusUnauthorized)
 			c.Abort()
 
+			return
 		}
 
 		c.Next()
