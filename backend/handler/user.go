@@ -4,8 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kokoichi206/awesome-chat-app/openapi/gen/go/openapi"
 	"github.com/opentracing/opentracing-go"
+
+	"github.com/kokoichi206/awesome-chat-app/openapi/gen/go/openapi"
 )
 
 func (h *handler) PostLogin(c *gin.Context) {
