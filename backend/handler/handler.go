@@ -1,14 +1,10 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/opentracing/opentracing-go"
 
 	"github.com/kokoichi206/awesome-chat-app/backend/usecase"
 	"github.com/kokoichi206/awesome-chat-app/backend/util/logger"
-	"github.com/kokoichi206/awesome-chat-app/openapi/gen/go/openapi"
 )
 
 const (
@@ -37,24 +33,31 @@ func New(logger logger.Logger, usecase usecase.Usecase) *handler {
 		sessionCookieName: sessionCookieName,
 		sessionMaxAge:     sessionMaxAge,
 	}
-	// TODO: openapi に移行する？
-	h.setupRoutes(r)
 
-	openapi.RegisterHandlers(r, h)
+	h.setupRoutes()
 
 	return h
 }
 
-func (h *handler) setupRoutes(r *gin.Engine) {
+func (h *handler) setupRoutes() {
+	r := h.Engine.Group("/api")
+
 	r.GET("/health", h.Health)
-}
+	r.POST("/login", h.PostLogin)
 
-func (h *handler) Health(c *gin.Context) {
-	ctx := c.Request.Context()
-	span, ctx := opentracing.StartSpanFromContext(ctx, "handler.Health")
-	defer span.Finish()
+	r.Use(h.sessionCheck())
 
-	c.JSON(http.StatusOK, gin.H{
-		"health": "ok",
-	})
+	r.GET("/rooms", h.GetRooms)
+	r.PATCH("/rooms", h.PatchRoom)
+	r.POST("/rooms", h.PostRoom)
+	r.GET("/rooms/:roomID/messages", h.GetMessages)
+	r.POST("/rooms/:roomID/messages", h.PostMessage)
+	r.GET("/rooms/:roomID/users", h.GetRoomUsers)
+	r.GET("/users/followers", h.GetFollowers)
+	r.GET("/users/following", h.GetFollowing)
+	r.PATCH("/users/following/:user_id", h.PatchFollowing)
+	r.POST("/users/following/:user_id", h.PostFollowing)
+	r.GET("/users/me", h.GetMe)
+	r.PATCH("/users/me", h.PostMe)
+	r.GET("/users/:user_id", h.GetUserByID)
 }

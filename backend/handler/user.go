@@ -44,5 +44,5 @@ func (h *handler) PostMe(c *gin.Context) {
 	})
 }
 
-func (h *handler) GetUserByID(c *gin.Context, userId openapi.UserIdPath) {
+func (h *handler) GetUserByID(c *gin.Context) {
 }
