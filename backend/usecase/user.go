@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/opentracing/opentracing-go"
 )
@@ -19,11 +20,21 @@ func (u *usecase) VerifyIDToken(ctx context.Context, token string) error {
 	return nil
 }
 
-func (u *usecase) PostLogin(ctx context.Context, token string) (string, error) {
+func (u *usecase) PostLogin(ctx context.Context, idToken string) (string, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.PostLogin")
 	defer span.Finish()
 
-	session, err := u.firebase.CreateSession(ctx, token)
+	token, err := u.firebase.VerifyIDToken(ctx, idToken)
+	if err != nil {
+		return "", fmt.Errorf("failed to verify token: %w", err)
+	}
+
+	claims := token.Claims
+	if err := u.database.UpsertUser(ctx, claims["name"].(string), claims["email"].(string), claims["picture"].(string), time.Now()); err != nil {
+		return "", fmt.Errorf("failed to upsert user: %w", err)
+	}
+
+	session, err := u.firebase.CreateSession(ctx, idToken)
 	if err != nil {
 		return "", fmt.Errorf("failed to create session: %w", err)
 	}

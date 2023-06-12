@@ -2,12 +2,14 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"firebase.google.com/go/v4/auth"
 )
 
 // interface for database operations.
 type Database interface {
+	UpsertUser(ctx context.Context, name, email, pictureUrl string, updatedAt time.Time) error
 }
 
 type Firebase interface {
