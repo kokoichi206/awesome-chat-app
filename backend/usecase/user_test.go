@@ -158,7 +158,7 @@ func TestVerifySessionCookie(t *testing.T) {
 		name     string
 		args     args
 		makeMock func(m *MockFirebase)
-		want     string
+		want     *auth.Token
 		wantErr  string
 	}{
 		"success": {
@@ -169,9 +169,13 @@ func TestVerifySessionCookie(t *testing.T) {
 				m.
 					EXPECT().
 					VerifySessionCookie(gomock.Any(), "ok-session").
-					Return(&auth.Token{}, nil)
+					Return(&auth.Token{
+						UID: "ok-uid",
+					}, nil)
 			},
-			want: "session-value",
+			want: &auth.Token{
+				UID: "ok-uid",
+			},
 		},
 		"failure: verify token": {
 			args: args{
@@ -204,9 +208,10 @@ func TestVerifySessionCookie(t *testing.T) {
 			u := usecase.New(nil, m, nil)
 
 			// Act
-			err := u.VerifySessionCookie(context.Background(), tc.args.session)
+			got, err := u.VerifySessionCookie(context.Background(), tc.args.session)
 
 			// Assert
+			assert.Equal(t, tc.want, got, "result does not match")
 			if tc.wantErr == "" {
 				assert.Nil(t, err, "error should be nil")
 			} else {

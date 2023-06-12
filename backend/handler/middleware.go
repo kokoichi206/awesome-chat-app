@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var tokenContext = "token-context"
+
 func (h *handler) sessionCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -18,12 +20,15 @@ func (h *handler) sessionCheck() gin.HandlerFunc {
 			return
 		}
 
-		if err := h.usecase.VerifySessionCookie(c.Request.Context(), session); err != nil {
+		token, err := h.usecase.VerifySessionCookie(c.Request.Context(), session)
+		if err != nil {
 			c.Status(http.StatusUnauthorized)
 			c.Abort()
 
 			return
 		}
+
+		c.Set(tokenContext, *token)
 
 		c.Next()
 	}

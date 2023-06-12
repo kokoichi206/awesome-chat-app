@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 
+	"firebase.google.com/go/v4/auth"
+
 	"github.com/kokoichi206/awesome-chat-app/backend/repository"
 	"github.com/kokoichi206/awesome-chat-app/backend/util/logger"
 )
@@ -10,7 +12,7 @@ import (
 type Usecase interface {
 	VerifyIDToken(ctx context.Context, token string) error
 	PostLogin(ctx context.Context, token string) (string, error)
-	VerifySessionCookie(ctx context.Context, session string) error
+	VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error)
 }
 
 type usecase struct {

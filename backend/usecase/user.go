@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"firebase.google.com/go/v4/auth"
 	"github.com/opentracing/opentracing-go"
 )
 
@@ -42,14 +43,14 @@ func (u *usecase) PostLogin(ctx context.Context, idToken string) (string, error)
 	return session, nil
 }
 
-func (u *usecase) VerifySessionCookie(ctx context.Context, session string) error {
+func (u *usecase) VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.VerifySessionCookie")
 	defer span.Finish()
 
-	_, err := u.firebase.VerifySessionCookie(ctx, session)
+	token, err := u.firebase.VerifySessionCookie(ctx, session)
 	if err != nil {
-		return fmt.Errorf("failed to create session: %w", err)
+		return nil, fmt.Errorf("failed to verify session: %w", err)
 	}
 
-	return nil
+	return token, nil
 }
