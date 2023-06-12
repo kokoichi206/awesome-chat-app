@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"firebase.google.com/go/v4/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	gomock "github.com/golang/mock/gomock"
@@ -29,7 +30,7 @@ func TestAuthMiddleware(t *testing.T) {
 				m.
 					EXPECT().
 					VerifySessionCookie(gomock.Any(), "ok-session").
-					Return(nil).
+					Return(&auth.Token{UID: "ok-user"}, nil).
 					Times(1)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -50,7 +51,7 @@ func TestAuthMiddleware(t *testing.T) {
 				m.
 					EXPECT().
 					VerifySessionCookie(gomock.Any(), "ng-session").
-					Return(errors.New("error in test")).
+					Return(nil, errors.New("error in test")).
 					Times(1)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
