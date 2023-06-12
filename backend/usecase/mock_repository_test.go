@@ -11,6 +11,7 @@ import (
 
 	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
+	model "github.com/kokoichi206/awesome-chat-app/backend/model"
 )
 
 // MockDatabase is a mock of Database interface.
@@ -34,6 +35,21 @@ func NewMockDatabase(ctrl *gomock.Controller) *MockDatabase {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 	return m.recorder
+}
+
+// SelectUser mocks base method.
+func (m *MockDatabase) SelectUser(ctx context.Context, email string) (*model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SelectUser", ctx, email)
+	ret0, _ := ret[0].(*model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SelectUser indicates an expected call of SelectUser.
+func (mr *MockDatabaseMockRecorder) SelectUser(ctx, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SelectUser", reflect.TypeOf((*MockDatabase)(nil).SelectUser), ctx, email)
 }
 
 // UpsertUser mocks base method.

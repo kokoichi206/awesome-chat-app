@@ -9,8 +9,84 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	model "github.com/kokoichi206/awesome-chat-app/backend/model"
 	"github.com/kokoichi206/awesome-chat-app/backend/usecase"
 )
+
+func TestGetUser(t *testing.T) {
+	t.Parallel()
+
+	type args struct {
+		email string
+	}
+
+	testCases := map[string]struct {
+		args     args
+		makeMock func(m *MockDatabase)
+		want     *model.User
+		wantErr  string
+	}{
+		"success": {
+			args: args{
+				email: "kokoichi206@test.com",
+			},
+			makeMock: func(m *MockDatabase) {
+				m.
+					EXPECT().
+					SelectUser(gomock.Any(), "kokoichi206@test.com").
+					Return(&model.User{
+						Name:  "kokoichi206",
+						Email: "kokoichi206@test.com",
+					}, nil)
+			},
+			want: &model.User{
+				Name:  "kokoichi206",
+				Email: "kokoichi206@test.com",
+			},
+		},
+		"failure: select user": {
+			args: args{
+				email: "kokoichi206@test.com",
+			},
+			makeMock: func(m *MockDatabase) {
+				m.
+					EXPECT().
+					SelectUser(gomock.Any(), "kokoichi206@test.com").
+					Return(nil, errors.New("error in test"))
+			},
+			wantErr: "failed to select user: error in test",
+		},
+	}
+
+	for name, tc := range testCases {
+		name := name
+		tc := tc
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			// Arrange
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			m := NewMockDatabase(ctrl)
+			tc.makeMock(m)
+
+			u := usecase.New(m, nil, nil)
+
+			// Act
+			got, err := u.GetUser(context.Background(), tc.args.email)
+
+			// Assert
+			assert.Equal(t, tc.want, got, "result does not match")
+			if tc.wantErr == "" {
+				assert.Nil(t, err, "error should be nil")
+			} else {
+				assert.Equal(t, tc.wantErr, err.Error(), "result does not match")
+			}
+		})
+	}
+}
 
 func TestVerifyIDToken(t *testing.T) {
 	t.Parallel()
@@ -77,6 +153,7 @@ func TestVerifyIDToken(t *testing.T) {
 		})
 	}
 }
+
 func TestPostLogin(t *testing.T) {
 	t.Parallel()
 

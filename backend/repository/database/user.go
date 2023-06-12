@@ -2,11 +2,37 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"time"
 
 	"github.com/opentracing/opentracing-go"
+
+	"github.com/kokoichi206/awesome-chat-app/backend/model"
 )
+
+const selectUserStmt = `
+SELECT
+	id, username, email, profile_info, profile_picture_url, created_at, updated_at
+FROM users
+WHERE email = $1;
+`
+
+func (d *database) SelectUser(ctx context.Context, email string) (*model.User, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repository.SelectUser")
+	defer span.Finish()
+
+	m := model.User{}
+	prof := sql.NullString{}
+	row := d.db.QueryRowContext(ctx, selectUserStmt, email)
+
+	err := row.Scan(&m.ID, &m.Name, &m.Email, &prof, &m.PictureURL, &m.CreatedAt, &m.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to scan user: %w", err)
+	}
+
+	return &m, nil
+}
 
 const upsertUserStmt = `
 INSERT INTO users (

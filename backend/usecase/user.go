@@ -6,8 +6,21 @@ import (
 	"time"
 
 	"firebase.google.com/go/v4/auth"
+	"github.com/kokoichi206/awesome-chat-app/backend/model"
 	"github.com/opentracing/opentracing-go"
 )
+
+func (u *usecase) GetUser(ctx context.Context, email string) (*model.User, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.GetUser")
+	defer span.Finish()
+
+	user, err := u.database.SelectUser(ctx, email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to select user: %w", err)
+	}
+
+	return user, nil
+}
 
 func (u *usecase) VerifyIDToken(ctx context.Context, token string) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.VerifyIDToken")
