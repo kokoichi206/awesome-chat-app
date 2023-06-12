@@ -7,6 +7,7 @@ package usecase_test
 import (
 	context "context"
 	reflect "reflect"
+	time "time"
 
 	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
@@ -33,6 +34,20 @@ func NewMockDatabase(ctrl *gomock.Controller) *MockDatabase {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 	return m.recorder
+}
+
+// UpsertUser mocks base method.
+func (m *MockDatabase) UpsertUser(ctx context.Context, name, email, pictureUrl string, updatedAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpsertUser", ctx, name, email, pictureUrl, updatedAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpsertUser indicates an expected call of UpsertUser.
+func (mr *MockDatabaseMockRecorder) UpsertUser(ctx, name, email, pictureUrl, updatedAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertUser", reflect.TypeOf((*MockDatabase)(nil).UpsertUser), ctx, name, email, pictureUrl, updatedAt)
 }
 
 // MockFirebase is a mock of Firebase interface.

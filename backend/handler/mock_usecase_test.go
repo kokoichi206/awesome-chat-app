@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -64,11 +65,12 @@ func (mr *MockUsecaseMockRecorder) VerifyIDToken(ctx, token interface{}) *gomock
 }
 
 // VerifySessionCookie mocks base method.
-func (m *MockUsecase) VerifySessionCookie(ctx context.Context, session string) error {
+func (m *MockUsecase) VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VerifySessionCookie", ctx, session)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*auth.Token)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // VerifySessionCookie indicates an expected call of VerifySessionCookie.

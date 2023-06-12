@@ -25,7 +25,7 @@ func (d *database) UpsertUser(ctx context.Context, name, email, pictureUrl strin
 
 	_, err := d.db.ExecContext(ctx, upsertUserStmt, name, email, pictureUrl, updatedAt)
 	if err != nil {
-		return fmt.Errorf("failed to insert user: %w", err)
+		return fmt.Errorf("failed to upsert user: %w", err)
 	}
 
 	return nil

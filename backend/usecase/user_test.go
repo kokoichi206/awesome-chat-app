@@ -20,7 +20,6 @@ func TestVerifyIDToken(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		name     string
 		args     args
 		makeMock func(m *MockFirebase)
 		wantErr  string
@@ -88,7 +87,7 @@ func TestPostLogin(t *testing.T) {
 	testCases := map[string]struct {
 		name     string
 		args     args
-		makeMock func(m *MockFirebase)
+		makeMock func(md *MockDatabase, mf *MockFirebase)
 		want     string
 		wantErr  string
 	}{
@@ -96,22 +95,84 @@ func TestPostLogin(t *testing.T) {
 			args: args{
 				token: "ok-token",
 			},
-			makeMock: func(m *MockFirebase) {
-				m.
+			makeMock: func(md *MockDatabase, mf *MockFirebase) {
+				mf.
+					EXPECT().
+					VerifyIDToken(gomock.Any(), "ok-token").
+					Return(&auth.Token{
+						Claims: map[string]interface{}{
+							"name":    "kokoichi206",
+							"email":   "kokoichi206@test.com",
+							"picture": "https://kokoichi206.test.com",
+						},
+					}, nil)
+				md.
+					EXPECT().
+					UpsertUser(gomock.Any(), "kokoichi206", "kokoichi206@test.com", "https://kokoichi206.test.com", gomock.Any()).
+					Return(nil)
+				mf.
 					EXPECT().
 					CreateSession(gomock.Any(), "ok-token").
 					Return("session-value", nil)
 			},
 			want: "session-value",
 		},
-		"failure: verify token": {
+		"failure: verify id token": {
 			args: args{
-				token: "ng-token",
+				token: "ok-token",
 			},
-			makeMock: func(m *MockFirebase) {
-				m.
+			makeMock: func(md *MockDatabase, mf *MockFirebase) {
+				mf.
 					EXPECT().
-					CreateSession(gomock.Any(), "ng-token").
+					VerifyIDToken(gomock.Any(), "ok-token").
+					Return(&auth.Token{}, errors.New("error in test"))
+			},
+			wantErr: "failed to verify token: error in test",
+		},
+		"failure: upsert": {
+			args: args{
+				token: "ok-token",
+			},
+			makeMock: func(md *MockDatabase, mf *MockFirebase) {
+				mf.
+					EXPECT().
+					VerifyIDToken(gomock.Any(), "ok-token").
+					Return(&auth.Token{
+						Claims: map[string]interface{}{
+							"name":    "kokoichi206",
+							"email":   "kokoichi206@test.com",
+							"picture": "https://kokoichi206.test.com",
+						},
+					}, nil)
+				md.
+					EXPECT().
+					UpsertUser(gomock.Any(), "kokoichi206", "kokoichi206@test.com", "https://kokoichi206.test.com", gomock.Any()).
+					Return(errors.New("error in test"))
+			},
+			wantErr: "failed to upsert user: error in test",
+		},
+		"failure: create session": {
+			args: args{
+				token: "ok-token",
+			},
+			makeMock: func(md *MockDatabase, mf *MockFirebase) {
+				mf.
+					EXPECT().
+					VerifyIDToken(gomock.Any(), "ok-token").
+					Return(&auth.Token{
+						Claims: map[string]interface{}{
+							"name":    "kokoichi206",
+							"email":   "kokoichi206@test.com",
+							"picture": "https://kokoichi206.test.com",
+						},
+					}, nil)
+				md.
+					EXPECT().
+					UpsertUser(gomock.Any(), "kokoichi206", "kokoichi206@test.com", "https://kokoichi206.test.com", gomock.Any()).
+					Return(nil)
+				mf.
+					EXPECT().
+					CreateSession(gomock.Any(), "ok-token").
 					Return("", errors.New("error in test"))
 			},
 			wantErr: "failed to create session: error in test",
@@ -129,10 +190,11 @@ func TestPostLogin(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			m := NewMockFirebase(ctrl)
-			tc.makeMock(m)
+			md := NewMockDatabase(ctrl)
+			mf := NewMockFirebase(ctrl)
+			tc.makeMock(md, mf)
 
-			u := usecase.New(nil, m, nil)
+			u := usecase.New(md, mf, nil)
 
 			// Act
 			got, err := u.PostLogin(context.Background(), tc.args.token)
@@ -147,6 +209,7 @@ func TestPostLogin(t *testing.T) {
 		})
 	}
 }
+
 func TestVerifySessionCookie(t *testing.T) {
 	t.Parallel()
 
@@ -187,7 +250,7 @@ func TestVerifySessionCookie(t *testing.T) {
 					VerifySessionCookie(gomock.Any(), "ng-session").
 					Return(nil, errors.New("error in test"))
 			},
-			wantErr: "failed to create session: error in test",
+			wantErr: "failed to verify session: error in test",
 		},
 	}
 
