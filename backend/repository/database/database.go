@@ -15,7 +15,7 @@ type database struct {
 	logger logger.Logger
 }
 
-func New(driver, host, port, user, password, dbname, sslmode string, logger logger.Logger) (repository.Database, error) {
+func Connect(driver, host, port, user, password, dbname, sslmode string) (*sql.DB, error) {
 	source := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		host, port, user, password, dbname, sslmode,
@@ -26,10 +26,14 @@ func New(driver, host, port, user, password, dbname, sslmode string, logger logg
 		return nil, fmt.Errorf("failed to open sql: %w", err)
 	}
 
+	return sqlDB, nil
+}
+
+func New(sqlDB *sql.DB, logger logger.Logger) repository.Database {
 	db := &database{
 		db:     sqlDB,
 		logger: logger,
 	}
 
-	return db, nil
+	return db
 }
