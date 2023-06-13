@@ -37,13 +37,13 @@ func main() {
 	opentracing.SetGlobalTracer(tracer)
 
 	// database
-	database, err := database.New(
-		cfg.DbDriver, cfg.DbHost, cfg.DbPort, cfg.DbUser, cfg.DbPassword,
-		cfg.DbName, cfg.DbSSLMode, logger,
-	)
+	db, err := database.Connect(cfg.DbDriver, cfg.DbHost, cfg.DbPort, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbSSLMode)
 	if err != nil {
-		logger.Errorf(context.Background(), "failed to db.New: ", err)
+		logger.Errorf(context.Background(), "cannot connect db: ", err)
 	}
+	defer db.Close()
+
+	database := database.New(db, logger)
 
 	authClient, err := firebase.New(context.Background(), cfg.CredentialPath)
 	if err != nil {

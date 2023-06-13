@@ -2,12 +2,17 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"firebase.google.com/go/v4/auth"
+
+	"github.com/kokoichi206/awesome-chat-app/backend/model"
 )
 
 // interface for database operations.
 type Database interface {
+	SelectUser(ctx context.Context, email string) (*model.User, error)
+	UpsertUser(ctx context.Context, name, email, pictureUrl string, updatedAt time.Time) error
 }
 
 type Firebase interface {

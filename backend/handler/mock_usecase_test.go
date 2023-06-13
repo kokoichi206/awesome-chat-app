@@ -8,7 +8,9 @@ import (
 	context "context"
 	reflect "reflect"
 
+	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
+	model "github.com/kokoichi206/awesome-chat-app/backend/model"
 )
 
 // MockUsecase is a mock of Usecase interface.
@@ -32,6 +34,21 @@ func NewMockUsecase(ctrl *gomock.Controller) *MockUsecase {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockUsecase) EXPECT() *MockUsecaseMockRecorder {
 	return m.recorder
+}
+
+// GetUser mocks base method.
+func (m *MockUsecase) GetUser(ctx context.Context, email string) (*model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUser", ctx, email)
+	ret0, _ := ret[0].(*model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUser indicates an expected call of GetUser.
+func (mr *MockUsecaseMockRecorder) GetUser(ctx, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUsecase)(nil).GetUser), ctx, email)
 }
 
 // PostLogin mocks base method.
@@ -64,11 +81,12 @@ func (mr *MockUsecaseMockRecorder) VerifyIDToken(ctx, token interface{}) *gomock
 }
 
 // VerifySessionCookie mocks base method.
-func (m *MockUsecase) VerifySessionCookie(ctx context.Context, session string) error {
+func (m *MockUsecase) VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VerifySessionCookie", ctx, session)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*auth.Token)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // VerifySessionCookie indicates an expected call of VerifySessionCookie.

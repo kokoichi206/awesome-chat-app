@@ -8,7 +8,6 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     profile_info TEXT,
     profile_picture_url TEXT NOT NULL,
-    last_activity TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL,
     deleted_at TIMESTAMPTZ

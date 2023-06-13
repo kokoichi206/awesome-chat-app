@@ -3,7 +3,9 @@ module github.com/kokoichi206/awesome-chat-app/backend
 go 1.20
 
 require (
+	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.11.0
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/assert/v2 v2.2.0
 	github.com/golang/mock v1.6.0
