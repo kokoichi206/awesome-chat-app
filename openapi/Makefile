@@ -24,4 +24,4 @@ gen:	## openapi.yaml から go のコードを生成する。
 
 .PHONY: prism
 prism:	## prism を使って stub サーバーを起動する。
-	prism mock openapi.yml -p 8383
+	prism mock openapi.yml --port 8383 --host 0.0.0.0
