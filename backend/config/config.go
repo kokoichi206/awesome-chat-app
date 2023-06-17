@@ -3,7 +3,7 @@ package config
 import "os"
 
 const (
-	defaultHost = "localhost"
+	defaultHost = "0.0.0.0"
 	defaultPort = "8080"
 )
 
