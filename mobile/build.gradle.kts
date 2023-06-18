@@ -6,6 +6,12 @@ plugins {
     id("org.jetbrains.compose").apply(false)
 }
 
+buildscript {
+    dependencies {
+        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
+    }
+}
+
 allprojects {
     repositories {
         google()

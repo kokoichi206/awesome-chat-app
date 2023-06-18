@@ -1,9 +1,12 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     kotlin("plugin.serialization") version "1.8.0"
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("com.codingfeline.buildkonfig")
 }
 
 kotlin {
@@ -101,5 +104,14 @@ android {
     }
     kotlin {
         jvmToolchain(11)
+    }
+}
+
+buildkonfig {
+    packageName = "util"
+
+    defaultConfigs {
+        buildConfigField(Type.STRING, "BASE_URL", "http://192.168.0.113:8383")
+        buildConfigField(Type.STRING, "API_PATH", "api")
     }
 }
