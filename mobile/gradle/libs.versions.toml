@@ -7,6 +7,8 @@ sqldelight = "2.0.0-alpha05"
 coroutinesVersion = "1.6.4"
 ktorVersion = "2.2.1"
 koinVersion = "3.3.2"
+resourcesVersion = "0.23.0"
+ktxDatetimeVersion = "0.4.0"
 
 [libraries]
 kviewmodel-core = { module = "com.adeo:kviewmodel", version.ref = "kviewmodel" }
@@ -30,3 +32,11 @@ ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorVersion" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinVersion" }
+
+resources = { module = "dev.icerock.moko:resources", version.ref = "resourcesVersion" }
+resourcesCompose = { module = "dev.icerock.moko:resources-compose", version.ref = "resourcesVersion" }
+resourcesTest = { module = "dev.icerock.moko:resources-test", version.ref = "resourcesVersion" }
+
+resourcesGradlePlugin = { module = "dev.icerock.moko:resources-generator", version.ref = "resourcesVersion" }
+
+ktx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "ktxDatetimeVersion" }

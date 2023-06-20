@@ -7,6 +7,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("com.codingfeline.buildkonfig")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
@@ -28,7 +29,6 @@ kotlin {
             baseName = "shared"
             isStatic = true
         }
-        extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
     sourceSets {
@@ -54,6 +54,11 @@ kotlin {
                 implementation(libs.kviewmodel.core)
                 implementation(libs.kviewmodel.compose)
                 implementation(libs.kviewmodel.odyssey)
+
+                api(moko.resources)
+                api(moko.resourcesCompose)
+
+                implementation(libs.ktx.datetime)
             }
         }
         val androidMain by getting {
@@ -69,7 +74,7 @@ kotlin {
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
-            dependencies{
+            dependencies {
                 implementation(libs.ktor.client.darwin)
             }
 
@@ -105,6 +110,10 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "jp.mydns.kokoichi206.awesomechatapp.resources"
 }
 
 buildkonfig {

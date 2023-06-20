@@ -9,6 +9,7 @@ plugins {
 buildscript {
     dependencies {
         classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
+        classpath(moko.resourcesGradlePlugin)
     }
 }
 
