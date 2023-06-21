@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,12 +22,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.icerock.moko.resources.compose.painterResource
+import domain.model.MessageType
 import domain.model.RoomMessage
 import domain.model.User
+import io.kamel.core.Resource
+import io.kamel.core.utils.cacheControl
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
+import io.ktor.client.utils.CacheControl
 import jp.mydns.kokoichi206.awesomechatapp.resources.MR
+import util.Constants
 
 @Composable
 fun OneMessage(
@@ -34,34 +44,21 @@ fun OneMessage(
     roomMessage: RoomMessage,
     user: User,
 ) {
-    MessageText(roomMessage, user, myUid == roomMessage.userId)
-}
-
-@Composable
-fun MessageText(
-    roomMessage: RoomMessage,
-    user: User,
-    isMyText: Boolean,
-) {
-    if (isMyText) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd,
-        ) {
-            MyMessageText(roomMessage)
-        }
-    } else {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterStart,
-        ) {
-            OthersText(roomMessage, user)
+    val isMyText = myUid == roomMessage.userId
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = if (isMyText) Alignment.CenterEnd else Alignment.CenterStart,
+    ) {
+        if (isMyText) {
+            MyMessage(roomMessage)
+        } else {
+            OthersMessage(roomMessage, user)
         }
     }
 }
 
 @Composable
-fun MyMessageText(
+fun MyMessage(
     roomMessage: RoomMessage,
 ) {
     Box(
@@ -70,6 +67,7 @@ fun MyMessageText(
         Row(
             modifier = Modifier
                 .padding(4.dp),
+            verticalAlignment = Alignment.Bottom,
         ) {
             Column(
                 modifier = Modifier
@@ -89,25 +87,18 @@ fun MyMessageText(
                 )
             }
 
-            Text(
-                modifier = Modifier
-                    .sizeIn(maxWidth = 240.dp)
-                    .wrapContentSize()
-                    .graphicsLayer {
-                        shadowElevation = 4.dp.toPx()
-                        shape = MessageTextShape(12.dp.toPx(), true)
-                        clip = true
-                    }
-                    .background(color = Color(0xFF79E278))
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                text = roomMessage.content,
-            )
+            when (roomMessage.type) {
+                MessageType.TEXT -> MessageText(roomMessage, true)
+                MessageType.IMAGE -> MessageImage(roomMessage)
+                MessageType.STAMP -> TODO()
+                MessageType.UNKNOWN -> TODO()
+            }
         }
     }
 }
 
 @Composable
-fun OthersText(
+fun OthersMessage(
     roomMessage: RoomMessage,
     user: User,
 ) {
@@ -138,19 +129,12 @@ fun OthersText(
                     .padding(4.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                Text(
-                    modifier = Modifier
-                        .sizeIn(maxWidth = 240.dp)
-                        .wrapContentSize()
-                        .graphicsLayer {
-                            shadowElevation = 4.dp.toPx()
-                            shape = MessageTextShape(12.dp.toPx(), false)
-                            clip = true
-                        }
-                        .background(color = Color.White)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    text = roomMessage.content,
-                )
+                when (roomMessage.type) {
+                    MessageType.TEXT -> MessageText(roomMessage, false)
+                    MessageType.IMAGE -> MessageImage(roomMessage)
+                    MessageType.STAMP -> TODO()
+                    MessageType.UNKNOWN -> TODO()
+                }
 
                 val time = roomMessage.time
                 Text(
@@ -163,4 +147,52 @@ fun OthersText(
             }
         }
     }
+}
+
+@Composable
+fun MessageText(
+    roomMessage: RoomMessage,
+    isMyText: Boolean,
+) {
+    Text(
+        modifier = Modifier
+            .sizeIn(maxWidth = Constants.MAX_MESSAGE_WIDTH)
+            .wrapContentSize()
+            .graphicsLayer {
+                shadowElevation = 4.dp.toPx()
+                shape = MessageTextShape(12.dp.toPx(), isMyText)
+                clip = true
+            }
+            .background(color = if (isMyText) Color(0xFF79E278) else Color.White)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        text = roomMessage.content,
+    )
+}
+
+@Composable
+fun MessageImage(
+    roomMessage: RoomMessage,
+) {
+    val painterResource: Resource<Painter> =
+        asyncPainterResource(roomMessage.content) {
+            requestBuilder {
+                cacheControl(CacheControl.MAX_AGE)
+            }
+        }
+
+    KamelImage(
+        modifier = Modifier
+            .sizeIn(
+                maxHeight = Constants.MAX_MESSAGE_IMAGE_HEIGHT,
+                maxWidth = Constants.MAX_MESSAGE_WIDTH,
+            )
+            .background(Color.Yellow),
+        contentScale = ContentScale.Crop,
+        resource = painterResource,
+        contentDescription = "image of ${roomMessage.id}",
+        onLoading = { progress -> CircularProgressIndicator(progress) },
+        onFailure = { exception ->
+            println(exception.message.toString())
+        }
+    )
 }

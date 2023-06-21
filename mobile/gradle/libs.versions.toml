@@ -9,6 +9,7 @@ ktorVersion = "2.2.1"
 koinVersion = "3.3.2"
 resourcesVersion = "0.23.0"
 ktxDatetimeVersion = "0.4.0"
+kamelImageVersion = "0.5.1"
 
 [libraries]
 kviewmodel-core = { module = "com.adeo:kviewmodel", version.ref = "kviewmodel" }
@@ -40,3 +41,5 @@ resourcesTest = { module = "dev.icerock.moko:resources-test", version.ref = "res
 resourcesGradlePlugin = { module = "dev.icerock.moko:resources-generator", version.ref = "resourcesVersion" }
 
 ktx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "ktxDatetimeVersion" }
+
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImageVersion" }

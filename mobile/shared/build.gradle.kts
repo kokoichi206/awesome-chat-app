@@ -59,6 +59,8 @@ kotlin {
                 api(moko.resourcesCompose)
 
                 implementation(libs.ktx.datetime)
+
+                implementation(libs.kamel.image)
             }
         }
         val androidMain by getting {
