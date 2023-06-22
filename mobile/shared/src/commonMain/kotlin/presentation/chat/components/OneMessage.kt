@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +26,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.icerock.moko.resources.compose.painterResource
 import domain.model.MessageType
 import domain.model.RoomMessage
@@ -36,6 +36,10 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import io.ktor.client.utils.CacheControl
 import jp.mydns.kokoichi206.awesomechatapp.resources.MR
+import presentation.ui.IconSizeLarge
+import presentation.ui.SpaceMedium
+import presentation.ui.SpaceSmall
+import presentation.ui.SpaceTiny
 import util.Constants
 
 @Composable
@@ -66,24 +70,24 @@ fun MyMessage(
     ) {
         Row(
             modifier = Modifier
-                .padding(4.dp),
+                .padding(SpaceTiny),
             verticalAlignment = Alignment.Bottom,
         ) {
             Column(
                 modifier = Modifier
-                    .padding(4.dp),
+                    .padding(SpaceTiny),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     // FIXME: 他ユーザーからの既読情報取得。
                     text = "既読",
-                    fontSize = 11.sp,
+                    style = MaterialTheme.typography.body1,
                 )
 
                 val time = roomMessage.time
                 Text(
                     text = "${time.hour}:${time.minute}",
-                    fontSize = 11.sp,
+                    style = MaterialTheme.typography.body1,
                 )
             }
 
@@ -107,26 +111,26 @@ fun OthersMessage(
     ) {
         Row(
             modifier = Modifier
-                .padding(4.dp),
+                .padding(SpaceTiny),
             verticalAlignment = Alignment.Top,
         ) {
             Image(
                 modifier = Modifier
-                    .size(46.dp)
+                    .size(IconSizeLarge)
                     .clip(CircleShape)
                     .border(
                         shape = CircleShape,
                         width = 2.dp,
                         color = Color.Gray,
                     )
-                    .padding(2.dp),
+                    .padding(SpaceTiny),
                 painter = painterResource(MR.images.userdefault),
                 contentDescription = "image of ${user.name}",
             )
 
             Row(
                 modifier = Modifier
-                    .padding(4.dp),
+                    .padding(SpaceTiny),
                 verticalAlignment = Alignment.Bottom,
             ) {
                 when (roomMessage.type) {
@@ -139,10 +143,10 @@ fun OthersMessage(
                 val time = roomMessage.time
                 Text(
                     modifier = Modifier
-                        .padding(4.dp)
+                        .padding(SpaceTiny)
                         .width(32.dp),
                     text = "${time.hour}:${time.minute}",
-                    fontSize = 11.sp,
+                    style = MaterialTheme.typography.body1,
                 )
             }
         }
@@ -163,8 +167,8 @@ fun MessageText(
                 shape = MessageTextShape(12.dp.toPx(), isMyText)
                 clip = true
             }
-            .background(color = if (isMyText) Color(0xFF79E278) else Color.White)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .background(color = if (isMyText) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground)
+            .padding(horizontal = SpaceMedium, vertical = SpaceSmall),
         text = roomMessage.content,
     )
 }
@@ -185,8 +189,7 @@ fun MessageImage(
             .sizeIn(
                 maxHeight = Constants.MAX_MESSAGE_IMAGE_HEIGHT,
                 maxWidth = Constants.MAX_MESSAGE_WIDTH,
-            )
-            .background(Color.Yellow),
+            ),
         contentScale = ContentScale.Crop,
         resource = painterResource,
         contentDescription = "image of ${roomMessage.id}",
