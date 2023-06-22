@@ -24,7 +24,8 @@ fun App() {
         )
         Scaffold(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .notchPadding(),
             topBar = {
                 TopAppBar(
                     title = {
