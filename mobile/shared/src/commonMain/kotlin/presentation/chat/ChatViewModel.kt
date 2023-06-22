@@ -31,7 +31,6 @@ class ChatViewModel(
             _state.update {
                 it.copy(users = users)
             }
-            println(users)
         }
     }
 
