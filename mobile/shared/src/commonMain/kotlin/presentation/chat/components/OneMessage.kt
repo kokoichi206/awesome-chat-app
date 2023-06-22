@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
 import domain.model.MessageType
 import domain.model.RoomMessage
 import domain.model.User
@@ -35,7 +36,7 @@ import io.kamel.core.utils.cacheControl
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import io.ktor.client.utils.CacheControl
-import jp.mydns.kokoichi206.awesomechatapp.resources.MR
+import jp.mydns.kokoichi206.awesomechatapp.resources.SharedRes
 import presentation.ui.IconSizeLarge
 import presentation.ui.SpaceMedium
 import presentation.ui.SpaceSmall
@@ -80,7 +81,7 @@ fun MyMessage(
             ) {
                 Text(
                     // FIXME: 他ユーザーからの既読情報取得。
-                    text = "既読",
+                    text = stringResource(SharedRes.strings.read_message),
                     style = MaterialTheme.typography.body1,
                 )
 
@@ -124,7 +125,7 @@ fun OthersMessage(
                         color = Color.Gray,
                     )
                     .padding(SpaceTiny),
-                painter = painterResource(MR.images.userdefault),
+                painter = painterResource(SharedRes.images.userdefault),
                 contentDescription = "image of ${user.name}",
             )
 
@@ -145,7 +146,7 @@ fun OthersMessage(
                     modifier = Modifier
                         .padding(SpaceTiny)
                         .width(32.dp),
-                    text = "${time.hour}:${time.minute}",
+                    text = stringResource(SharedRes.strings.post_time, time.hour, time.minute),
                     style = MaterialTheme.typography.body1,
                 )
             }

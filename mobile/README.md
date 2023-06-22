@@ -2,6 +2,12 @@
 
 Compose Multiplatform で作成されてます。
 
+## Getting Started
+
+``` sh
+./gradlew generateMRcommonMain --info
+```
+
 ## ローカルと通信確認時
 
 1. [shared/build.gradle.kts](./shared/build.gradle.kts) 内の `BASE_URL` を変更する。

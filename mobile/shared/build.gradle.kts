@@ -116,6 +116,8 @@ android {
 
 multiplatformResources {
     multiplatformResourcesPackage = "jp.mydns.kokoichi206.awesomechatapp.resources"
+    multiplatformResourcesClassName = "SharedRes"
+    iosBaseLocalizationRegion = "ja"
 }
 
 buildkonfig {
