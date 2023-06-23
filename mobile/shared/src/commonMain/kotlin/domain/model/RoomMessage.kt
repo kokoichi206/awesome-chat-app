@@ -3,7 +3,7 @@ package domain.model
 import kotlinx.datetime.LocalDateTime
 
 data class RoomMessage(
-    val id: String,
+    val id: String? = null,
     val userId: String,
     val type: MessageType,
     val content: String,

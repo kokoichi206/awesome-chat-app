@@ -82,13 +82,13 @@ fun MyMessage(
                 Text(
                     // FIXME: 他ユーザーからの既読情報取得。
                     text = stringResource(SharedRes.strings.read_message),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
 
                 val time = roomMessage.time
                 Text(
                     text = "${time.hour}:${time.minute}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
             }
 
@@ -147,7 +147,7 @@ fun OthersMessage(
                         .padding(SpaceTiny)
                         .width(32.dp),
                     text = stringResource(SharedRes.strings.post_time, time.hour, time.minute),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.body2,
                 )
             }
         }

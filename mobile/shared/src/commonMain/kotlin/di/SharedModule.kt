@@ -8,6 +8,7 @@ import domain.repository.MeRepository
 import domain.repository.RoomRepository
 import domain.usecase.GetRoomMessagesUsecase
 import domain.usecase.GetRoomUsersUsecase
+import domain.usecase.PostMessagesUsecase
 import org.koin.dsl.module
 import util.provideDispatcher
 
@@ -22,6 +23,7 @@ private val dataModule = module {
 private val domainModule = module {
     factory { GetRoomUsersUsecase(get()) }
     factory { GetRoomMessagesUsecase(get()) }
+    factory { PostMessagesUsecase(get()) }
 }
 
 private val utilityModule = module {
