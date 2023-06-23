@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -88,6 +87,10 @@ class ChatViewModel(
     }
 
     fun onSendClick() {
+        if (state.value.input.isBlank()) {
+            return
+        }
+
         val roomMessage = RoomMessage(
             userId = state.value.myId,
             // TODO: テキスト以外の送信。
