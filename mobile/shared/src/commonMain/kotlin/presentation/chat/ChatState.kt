@@ -9,4 +9,7 @@ data class ChatState(
     val users: List<User> = emptyList(),
     val messages: List<RoomMessage> = emptyList(),
     val input: String = "",
+
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
 )
