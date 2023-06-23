@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,6 +49,15 @@ fun ChatMainScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    val scrollState = rememberLazyListState()
+
+    // メッセージの更新があるたびに、最下層までスクロールする。
+    LaunchedEffect(state.messages) {
+        if (state.messages.isNotEmpty()) {
+            scrollState.animateScrollToItem(state.messages.size - 1)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -55,6 +66,7 @@ fun ChatMainScreen(
             modifier = Modifier
                 .weight(1f)
                 .background(MaterialTheme.colors.secondary),
+            state = scrollState,
         ) {
             items(state.messages) { msg ->
                 state.users.firstOrNull { user ->
