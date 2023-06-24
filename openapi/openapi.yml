@@ -241,7 +241,7 @@ paths:
         401:
           $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
 
-  /api/rooms/:roomID/users:
+  /api/rooms/{roomID}/users:
     get:
       summary: 指定したルームに所属するユーザー一覧。
       operationId: getRoomUsers
@@ -259,7 +259,7 @@ paths:
         401:
           $ref: "./components/error-response.yml#/responses/401-Unauthenticated"
 
-  /api/rooms/:roomID/messages:
+  /api/rooms/{roomID}/messages:
     get:
       summary: 指定したルームでの未読メッセージ一覧を取得する。
       operationId: getMessages

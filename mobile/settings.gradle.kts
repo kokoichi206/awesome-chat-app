@@ -1,4 +1,4 @@
-rootProject.name = "My application"
+rootProject.name = "Awesome Chat App"
 
 include(":androidApp")
 include(":shared")
@@ -32,5 +32,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+
+    versionCatalogs {
+        create("moko") {
+            from(files("./gradle/libs.versions.toml"))
+        }
     }
 }
