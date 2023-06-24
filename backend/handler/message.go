@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+	auth "firebase.google.com/go/v4/auth"
 	"github.com/gin-gonic/gin"
+	"github.com/gobwas/httphead"
+	"github.com/gobwas/ws"
 	"github.com/opentracing/opentracing-go"
 
 	"github.com/kokoichi206/awesome-chat-app/backend/model"
@@ -55,4 +58,50 @@ func (h *handler) PostMessage(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func (h *handler) SubscribeMessages(c *gin.Context) {
+	w := c.Writer
+	r := c.Request
+
+	ctx := r.Context()
+	span, ctx := opentracing.StartSpanFromContext(ctx, "handler.SubscribeMessages")
+	defer span.Finish()
+
+	u := ws.HTTPUpgrader{
+		Extension: func(opt httphead.Option) bool {
+			return false
+		},
+	}
+
+	conn, _, _, err := u.Upgrade(r, w)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+
+		return
+	}
+	defer conn.Close()
+
+	tc, ok := c.Get(tokenContext)
+	if !ok {
+		c.Status(http.StatusInternalServerError)
+
+		return
+	}
+
+	token, ok := (tc).(auth.Token)
+	if !ok {
+		c.Status(http.StatusInternalServerError)
+
+		return
+	}
+
+	// 識別子として email を使う。
+	email := token.Claims["email"].(string)
+
+	if err := h.usecase.SubscribeMessages(ctx, &conn, email); err != nil {
+		h.logger.Warnf(ctx, "failed to subscribe messages: %v", err)
+
+		return
+	}
 }

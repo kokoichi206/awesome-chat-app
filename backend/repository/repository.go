@@ -15,6 +15,7 @@ type Database interface {
 	UpsertUser(ctx context.Context, name, email, pictureUrl string, updatedAt time.Time) error
 
 	InsertMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error
+	IsUserInRoom(ctx context.Context, userID, roomID string) (bool, error)
 }
 
 type Firebase interface {

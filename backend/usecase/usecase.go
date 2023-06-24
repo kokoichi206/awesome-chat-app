@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"net"
 	"time"
 
 	"firebase.google.com/go/v4/auth"
@@ -18,6 +19,7 @@ type Usecase interface {
 	VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error)
 
 	PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error
+	SubscribeMessages(ctx context.Context, conn *net.Conn, email string) error
 }
 
 type usecase struct {
@@ -25,6 +27,9 @@ type usecase struct {
 	firebase repository.Firebase
 
 	logger logger.Logger
+
+	// userID -> conn
+	msgConns map[string]*net.Conn
 }
 
 func New(database repository.Database, firebase repository.Firebase,
@@ -33,6 +38,8 @@ func New(database repository.Database, firebase repository.Firebase,
 		database: database,
 		firebase: firebase,
 		logger:   logger,
+
+		msgConns: map[string]*net.Conn{},
 	}
 
 	return usecase
