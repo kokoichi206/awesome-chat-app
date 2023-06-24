@@ -19,6 +19,8 @@ type Usecase interface {
 	PostLogin(ctx context.Context, token string) (string, error)
 	VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error)
 
+	GetRoomUsers(ctx context.Context, roomID string) ([]*response.RoomUser, error)
+
 	GetMessages(ctx context.Context, roomID, userID string, lastReadAt time.Time) ([]*response.Message, error)
 	PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error
 	SubscribeMessages(ctx context.Context, conn *net.Conn, email string) error
