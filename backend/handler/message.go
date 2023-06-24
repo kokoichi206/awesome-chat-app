@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	auth "firebase.google.com/go/v4/auth"
@@ -12,10 +13,41 @@ import (
 
 	"github.com/kokoichi206/awesome-chat-app/backend/model"
 	"github.com/kokoichi206/awesome-chat-app/backend/model/request"
+	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
 	"github.com/kokoichi206/awesome-chat-app/backend/util"
 )
 
 func (h *handler) GetMessages(c *gin.Context) {
+	ctx := c.Request.Context()
+	span, ctx := opentracing.StartSpanFromContext(ctx, "handler.GetMessages")
+	defer span.Finish()
+
+	roomID := c.Param("roomID")
+	if roomID == "" {
+		c.Status(http.StatusBadRequest)
+
+		return
+	}
+
+	lastReadAt, err := util.FromISO8601(c.Query("last_read_at"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"reason": fmt.Sprintf("invalid last_read_at: %s", err.Error()),
+		})
+
+		return
+	}
+
+	msgs, err := h.usecase.GetMessages(ctx, roomID, "", lastReadAt)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetMessages{
+		Messages: msgs,
+	})
 }
 
 func (h *handler) PostMessage(c *gin.Context) {

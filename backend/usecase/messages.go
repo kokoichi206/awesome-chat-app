@@ -14,7 +14,20 @@ import (
 	"github.com/opentracing/opentracing-go"
 
 	"github.com/kokoichi206/awesome-chat-app/backend/model"
+	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
 )
+
+func (u *usecase) GetMessages(ctx context.Context, roomID, userID string, lastReadAt time.Time) ([]*response.Message, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.GetMessages")
+	defer span.Finish()
+
+	msgs, err := u.database.SelectMessages(ctx, roomID, userID, lastReadAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to select messages: %w", err)
+	}
+
+	return msgs, nil
+}
 
 func (u *usecase) PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.PostMessage")

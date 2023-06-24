@@ -8,6 +8,7 @@ import (
 	"firebase.google.com/go/v4/auth"
 
 	"github.com/kokoichi206/awesome-chat-app/backend/model"
+	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
 	"github.com/kokoichi206/awesome-chat-app/backend/repository"
 	"github.com/kokoichi206/awesome-chat-app/backend/util/logger"
 )
@@ -18,6 +19,7 @@ type Usecase interface {
 	PostLogin(ctx context.Context, token string) (string, error)
 	VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error)
 
+	GetMessages(ctx context.Context, roomID, userID string, lastReadAt time.Time) ([]*response.Message, error)
 	PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error
 	SubscribeMessages(ctx context.Context, conn *net.Conn, email string) error
 }
