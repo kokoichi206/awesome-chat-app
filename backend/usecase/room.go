@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
 	"github.com/opentracing/opentracing-go"
+
+	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
 )
 
 func (u *usecase) GetRoomUsers(ctx context.Context, roomID string) ([]*response.RoomUser, error) {

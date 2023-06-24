@@ -8,7 +8,6 @@ import (
 	"github.com/opentracing/opentracing-go"
 
 	"github.com/kokoichi206/awesome-chat-app/backend/model"
-	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
 )
 
 const selectMessagesStmt = `
@@ -25,19 +24,19 @@ AND
 	posted_at >= $2;
 `
 
-func (d *database) SelectMessages(ctx context.Context, roomID, userID string, lastReadAt time.Time) ([]*response.Message, error) {
+func (d *database) SelectMessages(ctx context.Context, roomID string, lastReadAt time.Time) ([]*model.Message, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repository.SelectMessages")
 	defer span.Finish()
 
 	rows, err := d.db.QueryContext(ctx, selectMessagesStmt, roomID, lastReadAt)
 	if err != nil {
-		return nil, fmt.Errorf("failed to insert messages: %w", err)
+		return nil, fmt.Errorf("failed to select messages: %w", err)
 	}
 
-	resp := []*response.Message{}
+	resp := []*model.Message{}
 
 	for rows.Next() {
-		var msg response.Message
+		var msg model.Message
 
 		if err := rows.Scan(&msg.ID, &msg.UserID, &msg.Type, &msg.Content, &msg.PostedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan: %w", err)
@@ -75,7 +74,7 @@ func (d *database) InsertMessage(ctx context.Context, roomID, userID, content st
 
 	_, err := d.db.ExecContext(ctx, insertMessage, roomID, userID, messageType.String(), content, postedAt)
 	if err != nil {
-		return fmt.Errorf("failed to insert messages: %w", err)
+		return fmt.Errorf("failed to insert message: %w", err)
 	}
 
 	return nil

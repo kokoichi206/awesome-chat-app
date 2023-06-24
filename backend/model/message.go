@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type MessageType int
 
 const (
@@ -22,4 +24,12 @@ func (m MessageType) String() string {
 	}
 
 	return ""
+}
+
+type Message struct {
+	ID       string
+	UserID   string
+	Type     string
+	Content  string
+	PostedAt time.Time
 }

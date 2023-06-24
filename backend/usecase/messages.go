@@ -15,18 +15,31 @@ import (
 
 	"github.com/kokoichi206/awesome-chat-app/backend/model"
 	"github.com/kokoichi206/awesome-chat-app/backend/model/response"
+	"github.com/kokoichi206/awesome-chat-app/backend/util"
 )
 
-func (u *usecase) GetMessages(ctx context.Context, roomID, userID string, lastReadAt time.Time) ([]*response.Message, error) {
+func (u *usecase) GetMessages(ctx context.Context, roomID string, lastReadAt time.Time) ([]*response.Message, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "usecase.GetMessages")
 	defer span.Finish()
 
-	msgs, err := u.database.SelectMessages(ctx, roomID, userID, lastReadAt)
+	msgs, err := u.database.SelectMessages(ctx, roomID, lastReadAt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to select messages: %w", err)
 	}
 
-	return msgs, nil
+	resp := make([]*response.Message, 0, len(msgs))
+
+	for _, msg := range msgs {
+		resp = append(resp, &response.Message{
+			ID:       msg.ID,
+			UserID:   msg.UserID,
+			Type:     msg.Type,
+			Content:  msg.Content,
+			PostedAt: util.ToISO8601(msg.PostedAt),
+		})
+	}
+
+	return resp, nil
 }
 
 func (u *usecase) PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error {

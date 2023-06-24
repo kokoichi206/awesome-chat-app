@@ -38,7 +38,7 @@ func (h *handler) GetMessages(c *gin.Context) {
 		return
 	}
 
-	msgs, err := h.usecase.GetMessages(ctx, roomID, "", lastReadAt)
+	msgs, err := h.usecase.GetMessages(ctx, roomID, lastReadAt)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 

@@ -21,7 +21,7 @@ type Usecase interface {
 
 	GetRoomUsers(ctx context.Context, roomID string) ([]*response.RoomUser, error)
 
-	GetMessages(ctx context.Context, roomID, userID string, lastReadAt time.Time) ([]*response.Message, error)
+	GetMessages(ctx context.Context, roomID string, lastReadAt time.Time) ([]*response.Message, error)
 	PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error
 	SubscribeMessages(ctx context.Context, conn *net.Conn, email string) error
 }
