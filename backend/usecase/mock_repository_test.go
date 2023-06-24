@@ -37,6 +37,20 @@ func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 	return m.recorder
 }
 
+// InsertMessage mocks base method.
+func (m *MockDatabase) InsertMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertMessage", ctx, roomID, userID, content, messageType, postedAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertMessage indicates an expected call of InsertMessage.
+func (mr *MockDatabaseMockRecorder) InsertMessage(ctx, roomID, userID, content, messageType, postedAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertMessage", reflect.TypeOf((*MockDatabase)(nil).InsertMessage), ctx, roomID, userID, content, messageType, postedAt)
+}
+
 // SelectUser mocks base method.
 func (m *MockDatabase) SelectUser(ctx context.Context, email string) (*model.User, error) {
 	m.ctrl.T.Helper()

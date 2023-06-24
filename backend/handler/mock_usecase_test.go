@@ -7,6 +7,7 @@ package handler_test
 import (
 	context "context"
 	reflect "reflect"
+	time "time"
 
 	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
@@ -64,6 +65,20 @@ func (m *MockUsecase) PostLogin(ctx context.Context, token string) (string, erro
 func (mr *MockUsecaseMockRecorder) PostLogin(ctx, token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostLogin", reflect.TypeOf((*MockUsecase)(nil).PostLogin), ctx, token)
+}
+
+// PostMessage mocks base method.
+func (m *MockUsecase) PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostMessage", ctx, roomID, userID, content, messageType, postedAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PostMessage indicates an expected call of PostMessage.
+func (mr *MockUsecaseMockRecorder) PostMessage(ctx, roomID, userID, content, messageType, postedAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostMessage", reflect.TypeOf((*MockUsecase)(nil).PostMessage), ctx, roomID, userID, content, messageType, postedAt)
 }
 
 // VerifyIDToken mocks base method.

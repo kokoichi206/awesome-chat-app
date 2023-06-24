@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"firebase.google.com/go/v4/auth"
 
@@ -15,6 +16,8 @@ type Usecase interface {
 	VerifyIDToken(ctx context.Context, token string) error
 	PostLogin(ctx context.Context, token string) (string, error)
 	VerifySessionCookie(ctx context.Context, session string) (*auth.Token, error)
+
+	PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error
 }
 
 type usecase struct {

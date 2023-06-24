@@ -8,8 +8,8 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     profile_info TEXT,
     profile_picture_url TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ
 );
 COMMENT ON COLUMN users.email IS 'Firebase Auth などで取得した email アドレス。';
@@ -19,7 +19,7 @@ CREATE TABLE follows (
     user_id uuid REFERENCES users(id),
     follow_id uuid REFERENCES users(id),
     display_name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ,
     PRIMARY KEY (user_id, follow_id)
 );
@@ -35,15 +35,15 @@ CREATE TABLE chat_rooms (
     type uuid REFERENCES room_types(id),
     room_name VARCHAR(255) NOT NULL,
     created_by uuid REFERENCES users(id),
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ
 );
 
 CREATE TABLE room_users (
     room_id uuid REFERENCES chat_rooms(id),
     user_id uuid REFERENCES users(id),
-    last_read_at TIMESTAMPTZ NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL,
+    last_read_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ,
     PRIMARY KEY (room_id, user_id, created_at)
 );
@@ -60,16 +60,19 @@ CREATE TABLE messages (
     user_id uuid REFERENCES users(id),
     type uuid REFERENCES message_types(id),
     content TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL
+    posted_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 COMMENT ON COLUMN messages.type IS 'メッセージの種類。テキスト、画像、動画、音声など。';
 COMMENT ON COLUMN messages.content IS '画像などのバイナリデータに関しては外部 URL のパスとする。';
+COMMENT ON COLUMN messages.posted_at IS 'メッセージが投稿された日時（クライアントから渡されてくる）。';
+COMMENT ON COLUMN messages.created_at IS 'データベースに登録された日時。';
 
 CREATE TABLE stamps (
     id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     image_url TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 COMMENT ON TABLE stamps IS '利用可能なスタンプ情報。画像は外部 URL のパスとする。';
 
@@ -83,6 +86,6 @@ CREATE TABLE message_reactions (
     message_id uuid REFERENCES messages(id),
     user_id uuid REFERENCES users(id),
     reaction_id uuid REFERENCES reactions(id),
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (message_id, user_id)
 );
