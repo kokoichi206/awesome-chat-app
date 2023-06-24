@@ -11,6 +11,9 @@ properties:
   content:
     description: メッセージの内容。バイナリデータは base64 エンコードする。
     type: string
+  posted_at:
+    description: メッセージの投稿日時（ISO 8601 形式）
+    type: string
 required:
   - user_id
   - type

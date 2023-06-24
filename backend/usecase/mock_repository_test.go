@@ -12,6 +12,7 @@ import (
 	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
 	model "github.com/kokoichi206/awesome-chat-app/backend/model"
+	response "github.com/kokoichi206/awesome-chat-app/backend/model/response"
 )
 
 // MockDatabase is a mock of Database interface.
@@ -35,6 +36,65 @@ func NewMockDatabase(ctrl *gomock.Controller) *MockDatabase {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 	return m.recorder
+}
+
+// InsertMessage mocks base method.
+func (m *MockDatabase) InsertMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertMessage", ctx, roomID, userID, content, messageType, postedAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertMessage indicates an expected call of InsertMessage.
+func (mr *MockDatabaseMockRecorder) InsertMessage(ctx, roomID, userID, content, messageType, postedAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertMessage", reflect.TypeOf((*MockDatabase)(nil).InsertMessage), ctx, roomID, userID, content, messageType, postedAt)
+}
+
+// IsUserInRoom mocks base method.
+func (m *MockDatabase) IsUserInRoom(ctx context.Context, userID, roomID string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsUserInRoom", ctx, userID, roomID)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsUserInRoom indicates an expected call of IsUserInRoom.
+func (mr *MockDatabaseMockRecorder) IsUserInRoom(ctx, userID, roomID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsUserInRoom", reflect.TypeOf((*MockDatabase)(nil).IsUserInRoom), ctx, userID, roomID)
+}
+
+// SelectMessages mocks base method.
+func (m *MockDatabase) SelectMessages(ctx context.Context, roomID string, lastReadAt time.Time) ([]*model.Message, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SelectMessages", ctx, roomID, lastReadAt)
+	ret0, _ := ret[0].([]*model.Message)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SelectMessages indicates an expected call of SelectMessages.
+func (mr *MockDatabaseMockRecorder) SelectMessages(ctx, roomID, lastReadAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SelectMessages", reflect.TypeOf((*MockDatabase)(nil).SelectMessages), ctx, roomID, lastReadAt)
+}
+
+// SelectRoomUsers mocks base method.
+func (m *MockDatabase) SelectRoomUsers(ctx context.Context, roomID string) ([]*response.RoomUser, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SelectRoomUsers", ctx, roomID)
+	ret0, _ := ret[0].([]*response.RoomUser)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SelectRoomUsers indicates an expected call of SelectRoomUsers.
+func (mr *MockDatabaseMockRecorder) SelectRoomUsers(ctx, roomID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SelectRoomUsers", reflect.TypeOf((*MockDatabase)(nil).SelectRoomUsers), ctx, roomID)
 }
 
 // SelectUser mocks base method.

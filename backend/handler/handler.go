@@ -53,6 +53,7 @@ func (h *handler) setupRoutes() {
 	r.GET("/rooms/:roomID/messages", h.GetMessages)
 	r.POST("/rooms/:roomID/messages", h.PostMessage)
 	r.GET("/rooms/:roomID/users", h.GetRoomUsers)
+
 	r.GET("/users/followers", h.GetFollowers)
 	r.GET("/users/following", h.GetFollowing)
 	r.PATCH("/users/following/:user_id", h.PatchFollowing)
@@ -60,4 +61,6 @@ func (h *handler) setupRoutes() {
 	r.GET("/users/me", h.GetMe)
 	r.PATCH("/users/me", h.PostMe)
 	r.GET("/users/:user_id", h.GetUserByID)
+
+	r.GET("/users/:user_id/messages", h.SubscribeMessages)
 }

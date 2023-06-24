@@ -6,11 +6,14 @@ package handler_test
 
 import (
 	context "context"
+	net "net"
 	reflect "reflect"
+	time "time"
 
 	auth "firebase.google.com/go/v4/auth"
 	gomock "github.com/golang/mock/gomock"
 	model "github.com/kokoichi206/awesome-chat-app/backend/model"
+	response "github.com/kokoichi206/awesome-chat-app/backend/model/response"
 )
 
 // MockUsecase is a mock of Usecase interface.
@@ -34,6 +37,36 @@ func NewMockUsecase(ctrl *gomock.Controller) *MockUsecase {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockUsecase) EXPECT() *MockUsecaseMockRecorder {
 	return m.recorder
+}
+
+// GetMessages mocks base method.
+func (m *MockUsecase) GetMessages(ctx context.Context, roomID string, lastReadAt time.Time) ([]*response.Message, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMessages", ctx, roomID, lastReadAt)
+	ret0, _ := ret[0].([]*response.Message)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMessages indicates an expected call of GetMessages.
+func (mr *MockUsecaseMockRecorder) GetMessages(ctx, roomID, lastReadAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessages", reflect.TypeOf((*MockUsecase)(nil).GetMessages), ctx, roomID, lastReadAt)
+}
+
+// GetRoomUsers mocks base method.
+func (m *MockUsecase) GetRoomUsers(ctx context.Context, roomID string) ([]*response.RoomUser, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRoomUsers", ctx, roomID)
+	ret0, _ := ret[0].([]*response.RoomUser)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRoomUsers indicates an expected call of GetRoomUsers.
+func (mr *MockUsecaseMockRecorder) GetRoomUsers(ctx, roomID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoomUsers", reflect.TypeOf((*MockUsecase)(nil).GetRoomUsers), ctx, roomID)
 }
 
 // GetUser mocks base method.
@@ -64,6 +97,34 @@ func (m *MockUsecase) PostLogin(ctx context.Context, token string) (string, erro
 func (mr *MockUsecaseMockRecorder) PostLogin(ctx, token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostLogin", reflect.TypeOf((*MockUsecase)(nil).PostLogin), ctx, token)
+}
+
+// PostMessage mocks base method.
+func (m *MockUsecase) PostMessage(ctx context.Context, roomID, userID, content string, messageType model.MessageType, postedAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostMessage", ctx, roomID, userID, content, messageType, postedAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// PostMessage indicates an expected call of PostMessage.
+func (mr *MockUsecaseMockRecorder) PostMessage(ctx, roomID, userID, content, messageType, postedAt interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostMessage", reflect.TypeOf((*MockUsecase)(nil).PostMessage), ctx, roomID, userID, content, messageType, postedAt)
+}
+
+// SubscribeMessages mocks base method.
+func (m *MockUsecase) SubscribeMessages(ctx context.Context, conn *net.Conn, email string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SubscribeMessages", ctx, conn, email)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SubscribeMessages indicates an expected call of SubscribeMessages.
+func (mr *MockUsecaseMockRecorder) SubscribeMessages(ctx, conn, email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeMessages", reflect.TypeOf((*MockUsecase)(nil).SubscribeMessages), ctx, conn, email)
 }
 
 // VerifyIDToken mocks base method.
