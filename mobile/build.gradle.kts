@@ -10,6 +10,7 @@ buildscript {
     dependencies {
         classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
         classpath(moko.resourcesGradlePlugin)
+        classpath("com.google.gms:google-services:4.3.14")
     }
 }
 
