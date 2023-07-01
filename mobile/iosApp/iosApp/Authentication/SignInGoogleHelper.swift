@@ -22,7 +22,7 @@ final class SignInGoogleHelper {
         guard let topVC = viewController ?? topViewController() else {
             throw URLError(.cannotFindHost)
         }
- 
+
         let gidSignInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: topVC)
 
         guard let idToken = gidSignInResult.user.idToken?.tokenString else {
