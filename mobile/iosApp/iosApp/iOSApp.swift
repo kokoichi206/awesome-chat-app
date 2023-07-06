@@ -8,7 +8,9 @@ import GoogleSignIn
 @main
 struct iOSApp: App {
     init() {
-        HelperKt.doInitKoin()
+        let platformModule = PlatformModule()
+
+        HelperKt.doInitKoin(platformModule: platformModule)
 
         setupAuthentication()
     }

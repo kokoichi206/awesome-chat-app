@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import kotlinx.cinterop.useContents
 import platform.UIKit.UIApplication
+import platform.darwin.NSObject
 
 private val iosNotchInset = object : WindowInsets {
     override fun getTop(density: Density): Int {
@@ -33,3 +34,5 @@ private val iosNotchInset = object : WindowInsets {
 
 actual fun Modifier.notchPadding(): Modifier =
     this.windowInsetsPadding(iosNotchInset)
+
+actual typealias AppContext = NSObject

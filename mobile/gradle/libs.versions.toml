@@ -10,6 +10,7 @@ koinVersion = "3.3.2"
 resourcesVersion = "0.23.0"
 ktxDatetimeVersion = "0.4.0"
 kamelImageVersion = "0.5.1"
+multiplatformSettingsVersion = "1.0.0"
 
 [libraries]
 kviewmodel-core = { module = "com.adeo:kviewmodel", version.ref = "kviewmodel" }
@@ -43,3 +44,5 @@ resourcesGradlePlugin = { module = "dev.icerock.moko:resources-generator", versi
 ktx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "ktxDatetimeVersion" }
 
 kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImageVersion" }
+
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettingsVersion" }

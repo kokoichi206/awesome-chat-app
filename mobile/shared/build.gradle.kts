@@ -61,6 +61,8 @@ kotlin {
                 implementation(libs.ktx.datetime)
 
                 implementation(libs.kamel.image)
+
+                implementation(libs.multiplatform.settings)
             }
         }
         val androidMain by getting {
@@ -70,6 +72,8 @@ kotlin {
                 api("androidx.core:core-ktx:1.9.0")
 
                 implementation(libs.ktor.client.android)
+
+                implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
             }
         }
         val iosX64Main by getting
@@ -124,7 +128,7 @@ buildkonfig {
     packageName = "util"
 
     defaultConfigs {
-        buildConfigField(Type.STRING, "BASE_URL", "http://192.168.0.113:8383")
+        buildConfigField(Type.STRING, "BASE_URL", "http://192.168.0.7:8185/")
         buildConfigField(Type.STRING, "API_PATH", "api")
     }
 }
