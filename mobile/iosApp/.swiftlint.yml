@@ -1,0 +1,28 @@
+excluded:
+  - Sources
+  - Tests
+
+function_body_length:
+  - 130   # warning
+  - 220   # error
+
+identifier_name:
+  min_length: # only min_length
+    error: 2
+  excluded:
+    - i
+    - id
+    - URL
+    - x
+    - y
+    - vc
+    - on
+    - to
+  reporter: "xcode"
+type_name:
+  min_length: 4
+  max_length:
+    warning: 40
+    error: 50
+  excluded:
+    - iOSApp

@@ -11,7 +11,7 @@ import presentation.chat.ChatScreen
 import presentation.ui.CustomChatTheme
 
 @Composable
-fun App() {
+fun App(idToken: String) {
     // FIXME: navigation した時に、遷移元から値を受け取る。
     val roomId = "e8e31f8a-b0be-425e-8101-95e8c84bc699"
     val roomName = "部屋の名前"
